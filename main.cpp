@@ -31,7 +31,7 @@ int main()
     n8->addNeighbor(n7, Graph::Color::RED);
     std::cout << graph << std::endl;
     auto start = std::chrono::high_resolution_clock::now();
-    std::optional<std::list<size_t>> sequence = graph.getSequence(Graph::Color::RED, 7);
+    std::optional<std::deque<size_t>> sequence = graph.getSequence(Graph::Color::RED, 7);
     auto end = std::chrono::high_resolution_clock::now();
     std::cout << (sequence.has_value() ? "Sequence trouvee" : "Sequence non trouvee") << std::endl;
     if (sequence.has_value())

@@ -115,17 +115,17 @@ bool Graph::nodeExists(size_t id) const
 class QueueSequenceTupleComparator
 {
 public:
-    bool operator()(const std::tuple<Graph, size_t, std::list<size_t>> &t1,
-                    const std::tuple<Graph, size_t, std::list<size_t>> &t2) const
+    bool operator()(const std::tuple<Graph, size_t, std::deque<size_t>> &t1,
+                    const std::tuple<Graph, size_t, std::deque<size_t>> &t2) const
     {
         return std::get<1>(t1) < std::get<1>(t2);
     }
 };
 
-std::optional<std::list<size_t>> Graph::getSequence(Graph::Color color, size_t k) const
+std::optional<std::deque<size_t>> Graph::getSequence(Graph::Color color, size_t k) const
 {
-    std::priority_queue<std::tuple<Graph, size_t, std::list<size_t>>, std::vector<std::tuple<Graph, size_t, std::list<size_t>>>, QueueSequenceTupleComparator> queue;
-    queue.push(std::make_tuple(*this, 0, std::list<size_t>()));
+    std::priority_queue<std::tuple<Graph, size_t, std::deque<size_t>>, std::vector<std::tuple<Graph, size_t, std::deque<size_t>>>, QueueSequenceTupleComparator> queue;
+    queue.push(std::make_tuple(*this, 0, std::deque<size_t>()));
     while (!queue.empty())
     {
         auto[graph, alreadyRemoved, listToDisplay] = queue.top();

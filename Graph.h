@@ -3,7 +3,7 @@
 
 #include <iosfwd>
 #include <vector>
-#include <list>
+#include <deque>
 #include <exception>
 #include <optional>
 
@@ -36,7 +36,7 @@ public:
 
     void removeNode(size_t id);
 
-    [[nodiscard]] std::optional<std::list<size_t>> getSequence(Color color, size_t k) const;
+    [[nodiscard]] std::optional<std::deque<size_t>> getSequence(Color color, size_t k) const;
 
     [[maybe_unused]] [[nodiscard]] bool isEmpty() const;
 

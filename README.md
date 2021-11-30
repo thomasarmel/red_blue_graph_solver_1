@@ -25,7 +25,7 @@ n0->addNeighbor(n1, Graph::Color::RED);
 ```
 Is it possible to remove an uninterrupted sequence of k nodes with all the same red color ? Is so, the function returns the ids of the nodes to remove.
 ```c++
-std::optional<std::list<size_t>> sequence = graph.getSequence(Graph::Color::RED, 7);
+std::optional<std::deque<size_t>> sequence = graph.getSequence(Graph::Color::RED, 7);
 ```
 
 ### Exemple
@@ -62,7 +62,7 @@ If we want to check if there is a sequence of 7 red nodes, we can use the follow
     n6->addNeighbor(n3, Graph::Color::BLUE);
     n8->addNeighbor(n7, Graph::Color::RED);
     std::cout << graph << std::endl;
-    std::optional<std::list<size_t>> sequence = graph.getSequence(Graph::Color::RED, 7);
+    std::optional<std::deque<size_t>> sequence = graph.getSequence(Graph::Color::RED, 7);
     std::cout << (sequence.has_value() ? "Sequence found" : "Sequence not found") << std::endl;
     if (sequence.has_value())
     {
