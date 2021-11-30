@@ -6,6 +6,12 @@ Node::Node(Graph *parentGraph, Graph::Color color, size_t id) : _parentGraph(*pa
 {
 }
 
+Node::Node(Graph *parentGraph, const Node &nodeToCopy) : _parentGraph(*parentGraph), _color(nodeToCopy._color),
+                                                         _id(nodeToCopy._id), _neighbors(nodeToCopy._neighbors)
+{
+}
+
+
 void Node::addNeighbor(Node *node, Graph::Color verticeColor)
 {
     if (_neighbors.find(node->getId()) != _neighbors.end())

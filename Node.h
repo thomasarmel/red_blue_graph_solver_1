@@ -55,6 +55,7 @@ public:
 
 private:
     Node(Graph *parentGraph, Graph::Color color, size_t id);
+    Node(Graph *parentGraph, const Node &nodeToCopy);
 
     Graph &_parentGraph;
     std::map<size_t, Graph::Color> _neighbors;

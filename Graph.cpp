@@ -55,11 +55,7 @@ Graph::Graph(const Graph &otherGraph) : _maxCapacity(otherGraph._maxCapacity), _
         {
             continue;
         }
-        _nodes[i] = new Node(this, otherGraph.getNode(i).getColor(), otherGraph.getNode(i).getId());
-        for (const auto &neighbor: otherGraph.getNode(i).getNeighbors())
-        {
-            _nodes[i]->addNeighbor(neighbor.first, neighbor.second);
-        }
+        _nodes[i] = new Node(this, otherGraph.getNode(i));
     }
 }
 
@@ -178,11 +174,7 @@ Graph &Graph::operator=(const Graph &other)
         {
             continue;
         }
-        _nodes[i] = new Node(this, other.getNode(i).getColor(), other.getNode(i).getId());
-        for (const auto &neighbor: other.getNode(i).getNeighbors())
-        {
-            _nodes[i]->addNeighbor(neighbor.first, neighbor.second);
-        }
+        _nodes[i] = new Node(this, other.getNode(i));
     }
     return *this;
 }

@@ -44,6 +44,6 @@ int main()
         std::cout << std::endl;
     }
     std::cout << "Temps d'execution : " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count()
-              << " µs" << std::endl;
+              << " micro-s" << std::endl;
     return 0;
 }
