@@ -8,26 +8,20 @@ Node::Node(Graph *parentGraph, Graph::Color color, size_t id) : _parentGraph(*pa
 
 void Node::addNeighbor(Node *node, Graph::Color verticeColor)
 {
-    for (auto it = _neighbors.begin(); it != _neighbors.end(); ++it)
+    if(_neighbors.find(node->getId()) != _neighbors.end())
     {
-        if (it->first == node->getId())
-        {
-            throw std::runtime_error("Node already exists");
-        }
+        throw std::runtime_error("Node already exists");
     }
-    _neighbors.push_back(std::make_pair(node->_id, verticeColor));
+    _neighbors.insert(std::pair<size_t, Graph::Color>(node->getId(), verticeColor));
 }
 
 void Node::addNeighbor(size_t nodeId, Graph::Color verticeColor)
 {
-    for (auto it = _neighbors.begin(); it != _neighbors.end(); ++it)
+    if(_neighbors.find(nodeId) != _neighbors.end())
     {
-        if (it->first == nodeId)
-        {
-            throw std::runtime_error("Node already exists");
-        }
+        throw std::runtime_error("Node already exists");
     }
-    _neighbors.push_back(std::make_pair(nodeId, verticeColor));
+    _neighbors.insert(std::pair<size_t, Graph::Color>(nodeId, verticeColor));
 }
 
 
@@ -51,22 +45,19 @@ size_t Node::getId() const
     return _id;
 }
 
-std::vector<std::pair<size_t, Graph::Color>> Node::getNeighbors() const
+std::map<size_t, Graph::Color> Node::getNeighbors() const
 {
     return _neighbors;
 }
 
 void Node::removeNeighbor(size_t nodeId)
 {
-    for (auto it = _neighbors.begin(); it != _neighbors.end(); ++it)
+    auto neighborPos = _neighbors.find(nodeId);
+    if(neighborPos == _neighbors.end())
     {
-        if (it->first == nodeId)
-        {
-            _neighbors.erase(it);
-            return;
-        }
+        throw NodeModificationException("Node " + std::to_string(_id) + " does not have a neighbor with id " + std::to_string(nodeId));
     }
-    throw NodeModificationException("Node " + std::to_string(_id) + " does not have a neighbor with id " + std::to_string(nodeId));
+    _neighbors.erase(neighborPos);
 }
 
 void Node::setColor(Graph::Color color)

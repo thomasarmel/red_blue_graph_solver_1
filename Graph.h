@@ -5,6 +5,7 @@
 #include <vector>
 #include <list>
 #include <exception>
+#include <optional>
 
 class Node;
 
@@ -19,16 +20,17 @@ public:
     Graph(size_t maxCapacity);
     Graph(const Graph &otherGraph);
     ~Graph();
-    Graph& operator=(const Graph &other) = delete; // Useless here but could be implemented later
+    Graph& operator=(const Graph &other);
     Node *createNode(const Graph::Color &color, size_t id);
     bool nodeExists(size_t id) const;
     Node &getNode(size_t id) const;
     void removeNode(size_t id);
-    bool isSequence(Color color, size_t k, size_t alreadyRemoved = 0, std::list<size_t> listToDisplay = std::list<size_t>(), size_t lastRemovedNode = 0) const;
+    std::optional<std::list<size_t>> getSequence(Color color, size_t k) const;
     bool isEmpty() const;
     size_t getMaxCapacity() const;
     size_t size() const;
     friend std::ostream &operator<<(std::ostream &os, const Graph &graph);
+    //friend bool operator==(const Graph &g1, const Graph &g2); // TODO
 
     class GraphModificationException : public std::exception
     {

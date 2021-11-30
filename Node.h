@@ -3,7 +3,7 @@
 
 #include "Graph.h"
 
-#include <vector>
+#include <map>
 #include <utility>
 #include <iosfwd>
 #include <exception>
@@ -22,7 +22,7 @@ public:
     size_t getId() const;
     void propagateColorToNeighbors();
     friend class Graph;
-    std::vector<std::pair<size_t, Graph::Color>> getNeighbors() const;
+    std::map<size_t, Graph::Color> getNeighbors() const;
     friend std::ostream &operator<<(std::ostream &os, const Node &node);
 
     class NodeModificationException : public std::exception
@@ -41,7 +41,8 @@ private:
     Node(Graph *parentGraph, Graph::Color color, size_t id);
 
     Graph &_parentGraph;
-    std::vector<std::pair<size_t, Graph::Color>> _neighbors;
+    //std::vector<std::pair<size_t, Graph::Color>> _neighbors;
+    std::map<size_t, Graph::Color> _neighbors;
     size_t _id;
     Graph::Color _color;
 };

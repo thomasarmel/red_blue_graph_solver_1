@@ -28,6 +28,17 @@ int main()
     n5->addNeighbor(n7, Graph::Color::BLUE);
     n6->addNeighbor(n3, Graph::Color::BLUE);
     n8->addNeighbor(n7, Graph::Color::RED);
-    std::cout << (graph.isSequence(Graph::Color::RED, 8) ? "Sequence trouvee" : "Sequence non trouvee") << std::endl;
+    std::cout << graph << std::endl;
+    std::optional<std::list<size_t>> sequence = graph.getSequence(Graph::Color::RED, 7);
+    std::cout << (sequence.has_value() ? "Sequence trouvee" : "Sequence non trouvee") << std::endl;
+    if(sequence.has_value())
+    {
+        std::cout << "Sequence : ";
+        for(auto it = sequence.value().begin(); it != sequence.value().end(); ++it)
+        {
+            std::cout << *it << " ";
+        }
+        std::cout << std::endl;
+    }
     return 0;
 }
