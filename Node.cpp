@@ -8,7 +8,7 @@ Node::Node(Graph *parentGraph, Graph::Color color, size_t id) : _parentGraph(*pa
 
 void Node::addNeighbor(Node *node, Graph::Color verticeColor)
 {
-    if(_neighbors.find(node->getId()) != _neighbors.end())
+    if (_neighbors.find(node->getId()) != _neighbors.end())
     {
         throw std::runtime_error("Node already exists");
     }
@@ -17,7 +17,7 @@ void Node::addNeighbor(Node *node, Graph::Color verticeColor)
 
 void Node::addNeighbor(size_t nodeId, Graph::Color verticeColor)
 {
-    if(_neighbors.find(nodeId) != _neighbors.end())
+    if (_neighbors.find(nodeId) != _neighbors.end())
     {
         throw std::runtime_error("Node already exists");
     }
@@ -27,10 +27,11 @@ void Node::addNeighbor(size_t nodeId, Graph::Color verticeColor)
 
 std::ostream &operator<<(std::ostream &os, const Node &node)
 {
-    os << "Node " << node._id << " (" << (node._color == Graph::Color::RED ? "RED" : "BLUE") <<"): " << std::endl;
-    for (const std::pair<size_t, Graph::Color> &vertice : node._neighbors)
+    os << "Node " << node._id << " (" << (node._color == Graph::Color::RED ? "RED" : "BLUE") << "): " << std::endl;
+    for (const std::pair<size_t, Graph::Color> &vertice: node._neighbors)
     {
-        os << "\t--- " << (vertice.second == Graph::Color::RED ? "RED" : "BLUE") << " ---> Node " << node._parentGraph.getNode(vertice.first)._id << std::endl;
+        os << "\t--- " << (vertice.second == Graph::Color::RED ? "RED" : "BLUE") << " ---> Node "
+           << node._parentGraph.getNode(vertice.first)._id << std::endl;
     }
     return os;
 }
@@ -53,9 +54,10 @@ std::map<size_t, Graph::Color> Node::getNeighbors() const
 void Node::removeNeighbor(size_t nodeId)
 {
     auto neighborPos = _neighbors.find(nodeId);
-    if(neighborPos == _neighbors.end())
+    if (neighborPos == _neighbors.end())
     {
-        throw NodeModificationException("Node " + std::to_string(_id) + " does not have a neighbor with id " + std::to_string(nodeId));
+        throw NodeModificationException(
+                "Node " + std::to_string(_id) + " does not have a neighbor with id " + std::to_string(nodeId));
     }
     _neighbors.erase(neighborPos);
 }
@@ -67,9 +69,9 @@ void Node::setColor(Graph::Color color)
 
 void Node::propagateColorToNeighbors()
 {
-    for (const std::pair<size_t, Graph::Color> &neighbor : _neighbors)
+    for (const std::pair<size_t, Graph::Color> &neighbor: _neighbors)
     {
-        if(!_parentGraph.nodeExists(neighbor.first))
+        if (!_parentGraph.nodeExists(neighbor.first))
         {
             continue;
         }

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <chrono>
 #include "Graph.h"
 #include "Node.h"
 
@@ -29,16 +30,20 @@ int main()
     n6->addNeighbor(n3, Graph::Color::BLUE);
     n8->addNeighbor(n7, Graph::Color::RED);
     std::cout << graph << std::endl;
+    auto start = std::chrono::high_resolution_clock::now();
     std::optional<std::list<size_t>> sequence = graph.getSequence(Graph::Color::RED, 7);
+    auto end = std::chrono::high_resolution_clock::now();
     std::cout << (sequence.has_value() ? "Sequence trouvee" : "Sequence non trouvee") << std::endl;
-    if(sequence.has_value())
+    if (sequence.has_value())
     {
         std::cout << "Sequence : ";
-        for(const size_t &it : sequence.value())
+        for (const size_t &it: sequence.value())
         {
             std::cout << it << " ";
         }
         std::cout << std::endl;
     }
+    std::cout << "Temps d'execution : " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count()
+              << " µs" << std::endl;
     return 0;
 }

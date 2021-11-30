@@ -13,11 +13,11 @@ Graph::Graph(size_t maxCapacity) : _maxCapacity(maxCapacity)
 
 Node *Graph::createNode(const Graph::Color &color, size_t id)
 {
-    if(nodeExists(id))
+    if (nodeExists(id))
     {
         throw GraphModificationException("Node already exists");
     }
-    if(id >= _maxCapacity)
+    if (id >= _maxCapacity)
     {
         throw GraphModificationException("Node id is out of bounds");
     }
@@ -28,9 +28,9 @@ Node *Graph::createNode(const Graph::Color &color, size_t id)
 
 std::ostream &operator<<(std::ostream &os, const Graph &graph)
 {
-    for (Node *node : graph._nodes)
+    for (Node *node: graph._nodes)
     {
-        if(node != nullptr)
+        if (node != nullptr)
         {
             os << *node << std::endl;
         }
@@ -40,23 +40,23 @@ std::ostream &operator<<(std::ostream &os, const Graph &graph)
 
 Graph::~Graph()
 {
-    for (Node *node : _nodes)
+    for (Node *node: _nodes)
     {
         delete node;
     }
 }
 
-Graph::Graph(const Graph &otherGraph) : _maxCapacity(otherGraph._maxCapacity)
+Graph::Graph(const Graph &otherGraph) : _maxCapacity(otherGraph._maxCapacity), _size(otherGraph._size)
 {
     _nodes.resize(otherGraph._nodes.size());
     for (size_t i = 0; i < _nodes.size(); ++i)
     {
-        if(otherGraph._nodes[i] == nullptr)
+        if (otherGraph._nodes[i] == nullptr)
         {
             continue;
         }
         _nodes[i] = new Node(this, otherGraph.getNode(i).getColor(), otherGraph.getNode(i).getId());
-        for(const auto &neighbor: otherGraph.getNode(i).getNeighbors())
+        for (const auto &neighbor: otherGraph.getNode(i).getNeighbors())
         {
             _nodes[i]->addNeighbor(neighbor.first, neighbor.second);
         }
@@ -70,15 +70,15 @@ Node &Graph::getNode(size_t id) const
 
 void Graph::removeNode(size_t id)
 {
-    if(!nodeExists(id))
+    if (!nodeExists(id))
     {
         throw GraphModificationException("Node does not exist");
     }
     Node *nodeToDelete = _nodes[id];
     nodeToDelete->propagateColorToNeighbors();
-    for (auto & _node : _nodes)
+    for (auto &_node: _nodes)
     {
-        if(_node == nullptr)
+        if (_node == nullptr)
         {
             continue;
         }
@@ -103,9 +103,7 @@ bool Graph::nodeExists(size_t id) const
 
 [[maybe_unused]] bool Graph::isEmpty() const
 {
-    return std::all_of(_nodes.begin(), _nodes.end(), [](Node *node) {
-        return node == nullptr;
-    });
+    return _size == 0;
 }
 
 [[maybe_unused]] size_t Graph::getMaxCapacity() const
@@ -121,7 +119,8 @@ bool Graph::nodeExists(size_t id) const
 class QueueSequenceTupleComparator
 {
 public:
-    bool operator()(const std::tuple<Graph, size_t, std::list<size_t>> &t1, const std::tuple<Graph, size_t, std::list<size_t>> &t2) const
+    bool operator()(const std::tuple<Graph, size_t, std::list<size_t>> &t1,
+                    const std::tuple<Graph, size_t, std::list<size_t>> &t2) const
     {
         return std::get<1>(t1) < std::get<1>(t2);
     }
@@ -131,17 +130,21 @@ std::optional<std::list<size_t>> Graph::getSequence(Graph::Color color, size_t k
 {
     std::priority_queue<std::tuple<Graph, size_t, std::list<size_t>>, std::vector<std::tuple<Graph, size_t, std::list<size_t>>>, QueueSequenceTupleComparator> queue;
     queue.push(std::make_tuple(*this, 0, std::list<size_t>()));
-    while(!queue.empty())
+    while (!queue.empty())
     {
-        auto [graph, alreadyRemoved, listToDisplay] = queue.top();
+        auto[graph, alreadyRemoved, listToDisplay] = queue.top();
         queue.pop();
-        if(alreadyRemoved == k)
+        if (alreadyRemoved == k)
         {
             return listToDisplay;
         }
-        for(size_t i = 0; i < graph._nodes.size(); ++i)
+        if (k > alreadyRemoved + graph.size())
         {
-            if(!graph._nodes[i])
+            continue;
+        }
+        for (size_t i = 0; i < graph._nodes.size(); ++i)
+        {
+            if (!graph._nodes[i])
             {
                 continue;
             }
@@ -158,9 +161,9 @@ std::optional<std::list<size_t>> Graph::getSequence(Graph::Color color, size_t k
 
 Graph &Graph::operator=(const Graph &other)
 {
-    for (auto & _node : _nodes)
+    for (auto &_node: _nodes)
     {
-        if(_node != nullptr)
+        if (_node != nullptr)
         {
             delete _node;
             _node = nullptr;
@@ -171,12 +174,12 @@ Graph &Graph::operator=(const Graph &other)
     _maxCapacity = other._maxCapacity;
     for (size_t i = 0; i < _nodes.size(); ++i)
     {
-        if(other._nodes[i] == nullptr)
+        if (other._nodes[i] == nullptr)
         {
             continue;
         }
         _nodes[i] = new Node(this, other.getNode(i).getColor(), other.getNode(i).getId());
-        for(const auto &neighbor: other.getNode(i).getNeighbors())
+        for (const auto &neighbor: other.getNode(i).getNeighbors())
         {
             _nodes[i]->addNeighbor(neighbor.first, neighbor.second);
         }

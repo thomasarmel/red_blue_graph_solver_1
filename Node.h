@@ -13,22 +13,34 @@ class Graph;
 class Node
 {
 public:
+    Node() = delete;
+    Node(const Node&) = delete;
     ~Node() = default;
+
     void addNeighbor(Node *node, Graph::Color verticeColor);
+
     void addNeighbor(size_t nodeId, Graph::Color verticeColor);
+
     void removeNeighbor(size_t nodeId);
+
     void setColor(Graph::Color color);
+
     [[nodiscard]] Graph::Color getColor() const;
+
     [[nodiscard]] size_t getId() const;
+
     void propagateColorToNeighbors();
+
     friend class Graph;
+
     [[nodiscard]] std::map<size_t, Graph::Color> getNeighbors() const;
+
     friend std::ostream &operator<<(std::ostream &os, const Node &node);
 
     class NodeModificationException : public std::exception
     {
     public:
-        explicit NodeModificationException(const std::string &message) :_message(message)
+        explicit NodeModificationException(const std::string &message) : _message(message)
         {
         }
 
@@ -36,6 +48,7 @@ public:
         {
             return _message.c_str();
         }
+
     private:
         std::string _message;
     };
@@ -44,7 +57,6 @@ private:
     Node(Graph *parentGraph, Graph::Color color, size_t id);
 
     Graph &_parentGraph;
-    //std::vector<std::pair<size_t, Graph::Color>> _neighbors;
     std::map<size_t, Graph::Color> _neighbors;
     size_t _id;
     Graph::Color _color;

@@ -12,19 +12,30 @@ class Node;
 class Graph
 {
 public:
-    enum class Color {
+    enum class Color
+    {
         RED,
         BLUE
     };
+
     Graph() = delete;
+
     explicit Graph(size_t maxCapacity);
+
     Graph(const Graph &otherGraph);
+
     ~Graph();
-    Graph& operator=(const Graph &other);
+
+    Graph &operator=(const Graph &other);
+
     Node *createNode(const Graph::Color &color, size_t id);
+
     [[nodiscard]] bool nodeExists(size_t id) const;
+
     [[nodiscard]] Node &getNode(size_t id) const;
+
     void removeNode(size_t id);
+
     [[nodiscard]] std::optional<std::list<size_t>> getSequence(Color color, size_t k) const;
 
     [[maybe_unused]] [[nodiscard]] bool isEmpty() const;
@@ -32,6 +43,7 @@ public:
     [[maybe_unused]] [[nodiscard]] size_t getMaxCapacity() const;
 
     [[maybe_unused]] [[nodiscard]] size_t size() const;
+
     friend std::ostream &operator<<(std::ostream &os, const Graph &graph);
     //friend bool operator==(const Graph &g1, const Graph &g2); // TODO
 
@@ -53,7 +65,7 @@ public:
 private:
     size_t _maxCapacity;
     size_t _size = 0;
-    std::vector<Node*> _nodes;
+    std::vector<Node *> _nodes;
 };
 
 
