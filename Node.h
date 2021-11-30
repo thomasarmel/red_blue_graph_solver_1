@@ -18,18 +18,21 @@ public:
     void addNeighbor(size_t nodeId, Graph::Color verticeColor);
     void removeNeighbor(size_t nodeId);
     void setColor(Graph::Color color);
-    Graph::Color getColor() const;
-    size_t getId() const;
+    [[nodiscard]] Graph::Color getColor() const;
+    [[nodiscard]] size_t getId() const;
     void propagateColorToNeighbors();
     friend class Graph;
-    std::map<size_t, Graph::Color> getNeighbors() const;
+    [[nodiscard]] std::map<size_t, Graph::Color> getNeighbors() const;
     friend std::ostream &operator<<(std::ostream &os, const Node &node);
 
     class NodeModificationException : public std::exception
     {
     public:
-        NodeModificationException(const std::string &message) :_message(message) {}
-        const char *what() const noexcept override
+        explicit NodeModificationException(const std::string &message) :_message(message)
+        {
+        }
+
+        [[nodiscard]] const char *what() const noexcept override
         {
             return _message.c_str();
         }

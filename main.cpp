@@ -34,9 +34,9 @@ int main()
     if(sequence.has_value())
     {
         std::cout << "Sequence : ";
-        for(auto it = sequence.value().begin(); it != sequence.value().end(); ++it)
+        for(const size_t &it : sequence.value())
         {
-            std::cout << *it << " ";
+            std::cout << it << " ";
         }
         std::cout << std::endl;
     }

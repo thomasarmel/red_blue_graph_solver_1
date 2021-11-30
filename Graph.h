@@ -17,27 +17,31 @@ public:
         BLUE
     };
     Graph() = delete;
-    Graph(size_t maxCapacity);
+    explicit Graph(size_t maxCapacity);
     Graph(const Graph &otherGraph);
     ~Graph();
     Graph& operator=(const Graph &other);
     Node *createNode(const Graph::Color &color, size_t id);
-    bool nodeExists(size_t id) const;
-    Node &getNode(size_t id) const;
+    [[nodiscard]] bool nodeExists(size_t id) const;
+    [[nodiscard]] Node &getNode(size_t id) const;
     void removeNode(size_t id);
-    std::optional<std::list<size_t>> getSequence(Color color, size_t k) const;
-    bool isEmpty() const;
-    size_t getMaxCapacity() const;
-    size_t size() const;
+    [[nodiscard]] std::optional<std::list<size_t>> getSequence(Color color, size_t k) const;
+
+    [[maybe_unused]] [[nodiscard]] bool isEmpty() const;
+
+    [[maybe_unused]] [[nodiscard]] size_t getMaxCapacity() const;
+
+    [[maybe_unused]] [[nodiscard]] size_t size() const;
     friend std::ostream &operator<<(std::ostream &os, const Graph &graph);
     //friend bool operator==(const Graph &g1, const Graph &g2); // TODO
 
     class GraphModificationException : public std::exception
     {
     public:
-        GraphModificationException(const std::string &message) : _message(message)
+        explicit GraphModificationException(const std::string &message) : _message(message)
         {}
-        const char *what() const noexcept override
+
+        [[nodiscard]] const char *what() const noexcept override
         {
             return _message.c_str();
         }

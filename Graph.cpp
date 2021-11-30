@@ -56,7 +56,7 @@ Graph::Graph(const Graph &otherGraph) : _maxCapacity(otherGraph._maxCapacity)
             continue;
         }
         _nodes[i] = new Node(this, otherGraph.getNode(i).getColor(), otherGraph.getNode(i).getId());
-        for(const std::pair<size_t, Graph::Color> &neighbor: otherGraph.getNode(i).getNeighbors())
+        for(const auto &neighbor: otherGraph.getNode(i).getNeighbors())
         {
             _nodes[i]->addNeighbor(neighbor.first, neighbor.second);
         }
@@ -76,15 +76,15 @@ void Graph::removeNode(size_t id)
     }
     Node *nodeToDelete = _nodes[id];
     nodeToDelete->propagateColorToNeighbors();
-    for (size_t i = 0; i < _nodes.size(); ++i)
+    for (auto & _node : _nodes)
     {
-        if(_nodes[i] == nullptr)
+        if(_node == nullptr)
         {
             continue;
         }
         try
         {
-            _nodes[i]->removeNeighbor(id);
+            _node->removeNeighbor(id);
         }
         catch (std::exception &e)
         {
@@ -101,24 +101,19 @@ bool Graph::nodeExists(size_t id) const
     return _nodes[id] != nullptr;
 }
 
-bool Graph::isEmpty() const
+[[maybe_unused]] bool Graph::isEmpty() const
 {
-    for (Node *node : _nodes)
-    {
-        if(node != nullptr)
-        {
-            return false;
-        }
-    }
-    return true;
+    return std::all_of(_nodes.begin(), _nodes.end(), [](Node *node) {
+        return node == nullptr;
+    });
 }
 
-size_t Graph::getMaxCapacity() const
+[[maybe_unused]] size_t Graph::getMaxCapacity() const
 {
     return _maxCapacity;
 }
 
-size_t Graph::size() const
+[[maybe_unused]] size_t Graph::size() const
 {
     return _size;
 }
@@ -163,12 +158,12 @@ std::optional<std::list<size_t>> Graph::getSequence(Graph::Color color, size_t k
 
 Graph &Graph::operator=(const Graph &other)
 {
-    for (size_t i=0; i<_nodes.size(); ++i)
+    for (auto & _node : _nodes)
     {
-        if(_nodes[i] != nullptr)
+        if(_node != nullptr)
         {
-            delete _nodes[i];
-            _nodes[i] = nullptr;
+            delete _node;
+            _node = nullptr;
         }
     }
     _nodes.resize(other._nodes.size());
@@ -181,7 +176,7 @@ Graph &Graph::operator=(const Graph &other)
             continue;
         }
         _nodes[i] = new Node(this, other.getNode(i).getColor(), other.getNode(i).getId());
-        for(const std::pair<size_t, Graph::Color> &neighbor: other.getNode(i).getNeighbors())
+        for(const auto &neighbor: other.getNode(i).getNeighbors())
         {
             _nodes[i]->addNeighbor(neighbor.first, neighbor.second);
         }
