@@ -17,6 +17,10 @@ Node *Graph::createNode(const Graph::Color &color, size_t id)
     {
         throw GraphModificationException("Node already exists");
     }
+    if(id >= _maxCapacity)
+    {
+        throw GraphModificationException("Node id is out of bounds");
+    }
     _size++;
     _nodes[id] = new Node(this, color, id);
     return _nodes[id];
