@@ -124,15 +124,15 @@ public:
 
 std::optional<std::deque<size_t>> Graph::getSequence(Graph::Color color, size_t k) const
 {
-    std::priority_queue<std::tuple<Graph, size_t, std::deque<size_t>>, std::vector<std::tuple<Graph, size_t, std::deque<size_t>>>, QueueSequenceTupleComparator> queue;
-    queue.push(std::make_tuple(*this, 0, std::deque<size_t>()));
-    while (!queue.empty())
+    std::priority_queue<std::tuple<Graph, size_t, std::deque<size_t>>, std::vector<std::tuple<Graph, size_t, std::deque<size_t>>>, QueueSequenceTupleComparator> graphStatesQueue;
+    graphStatesQueue.push(std::make_tuple(*this, 0, std::deque<size_t>()));
+    while (!graphStatesQueue.empty())
     {
-        auto[graph, alreadyRemoved, listToDisplay] = queue.top();
-        queue.pop();
+        auto[graph, alreadyRemoved, sequenceToDisplay] = graphStatesQueue.top();
+        graphStatesQueue.pop();
         if (alreadyRemoved == k)
         {
-            return listToDisplay;
+            return sequenceToDisplay;
         }
         if (k > alreadyRemoved + graph.size())
         {
@@ -147,12 +147,52 @@ std::optional<std::deque<size_t>> Graph::getSequence(Graph::Color color, size_t 
             bool goodColorHasBeenRemoved = graph._nodes[i]->getColor() == color;
             Graph graphCopy(graph);
             graphCopy.removeNode(i);
-            listToDisplay.push_back(i);
-            queue.push(std::make_tuple(graphCopy, (goodColorHasBeenRemoved ? alreadyRemoved + 1 : 0), listToDisplay));
-            listToDisplay.pop_back();
+            sequenceToDisplay.push_back(i);
+            graphStatesQueue.push(
+                    std::make_tuple(graphCopy, (goodColorHasBeenRemoved ? alreadyRemoved + 1 : 0), sequenceToDisplay));
+            sequenceToDisplay.pop_back();
         }
     }
     return std::nullopt;
+}
+
+std::pair<size_t, std::deque<size_t>> Graph::getSequenceMax(Graph::Color color) const
+{
+    std::priority_queue<std::tuple<Graph, size_t, std::deque<size_t>>, std::vector<std::tuple<Graph, size_t, std::deque<size_t>>>, QueueSequenceTupleComparator> graphStatesQueue;
+    std::pair<size_t, std::deque<size_t>> sequenceMax;
+    graphStatesQueue.push(std::make_tuple(*this, 0, std::deque<size_t>()));
+    while (!graphStatesQueue.empty())
+    {
+        auto[graph, alreadyRemoved, sequenceToDisplay] = graphStatesQueue.top();
+        graphStatesQueue.pop();
+        for (size_t i = 0; i < graph._nodes.size(); ++i)
+        {
+            if (!graph._nodes[i])
+            {
+                continue;
+            }
+            bool goodColorHasBeenRemoved = graph._nodes[i]->getColor() == color;
+            if(!goodColorHasBeenRemoved && ((graphStatesQueue.empty() || graph.size() <= std::get<1>(graphStatesQueue.top())) || graph.size() <= sequenceMax.second.size()) )
+            {
+                if(sequenceToDisplay.size() > sequenceMax.second.size())
+                {
+                    sequenceMax = std::make_pair(alreadyRemoved, sequenceToDisplay);
+                }
+                continue;
+            }
+            Graph graphCopy(graph);
+            graphCopy.removeNode(i);
+            sequenceToDisplay.push_back(i);
+            graphStatesQueue.push(
+                    std::make_tuple(graphCopy, (goodColorHasBeenRemoved ? alreadyRemoved + 1 : 0), sequenceToDisplay));
+            sequenceToDisplay.pop_back();
+        }
+    }
+    if(std::get<2>(graphStatesQueue.top()).size() > sequenceMax.second.size())
+    {
+        sequenceMax = std::make_pair(std::get<1>(graphStatesQueue.top()), std::get<2>(graphStatesQueue.top()));
+    }
+    return sequenceMax;
 }
 
 Graph &Graph::operator=(const Graph &other)

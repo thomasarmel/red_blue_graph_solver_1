@@ -27,6 +27,10 @@ Is it possible to remove an uninterrupted sequence of k nodes with all the same 
 ```c++
 std::optional<std::deque<size_t>> sequence = graph.getSequence(Graph::Color::RED, 7);
 ```
+Get the max sequence of red nodes it is possible to remove. The first element of the pair is the number of red nodes in the sequence and the second is the list of ids of the nodes to remove.
+```c++
+std::pair<size_t, std::deque<size_t>> sequenceMax = graph.getSequenceMax(Graph::Color::RED);
+```
 
 ### Example
 

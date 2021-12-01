@@ -5,6 +5,7 @@
 
 int main()
 {
+    std::chrono::steady_clock::time_point start, end;
     Graph graph(9);
     // No node 0
     Node *n1 = graph.createNode(Graph::Color::BLUE, 1);
@@ -30,9 +31,9 @@ int main()
     n6->addNeighbor(n3, Graph::Color::BLUE);
     n8->addNeighbor(n7, Graph::Color::RED);
     std::cout << graph << std::endl;
-    auto start = std::chrono::high_resolution_clock::now();
+    start = std::chrono::high_resolution_clock::now();
     std::optional<std::deque<size_t>> sequence = graph.getSequence(Graph::Color::RED, 7);
-    auto end = std::chrono::high_resolution_clock::now();
+    end = std::chrono::high_resolution_clock::now();
     std::cout << (sequence.has_value() ? "Sequence trouvee" : "Sequence non trouvee") << std::endl;
     if (sequence.has_value())
     {
@@ -43,6 +44,17 @@ int main()
         }
         std::cout << std::endl;
     }
+    std::cout << "Temps d'execution : " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count()
+              << " micro-s" << std::endl;
+    start = std::chrono::high_resolution_clock::now();
+    std::pair<size_t, std::deque<size_t>> sequenceMax = graph.getSequenceMax(Graph::Color::RED);
+    end = std::chrono::high_resolution_clock::now();
+    std::cout << "Sequence maximale (" << sequenceMax.first << " noeuds rouges retires): ";
+    for (const size_t &it: sequenceMax.second)
+    {
+        std::cout << it << " ";
+    }
+    std::cout << std::endl;
     std::cout << "Temps d'execution : " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count()
               << " micro-s" << std::endl;
     return 0;

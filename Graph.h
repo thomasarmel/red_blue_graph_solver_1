@@ -38,6 +38,8 @@ public:
 
     [[nodiscard]] std::optional<std::deque<size_t>> getSequence(Color color, size_t k) const;
 
+    [[nodiscard]] std::pair<size_t, std::deque<size_t>> getSequenceMax(Color color) const;
+
     [[maybe_unused]] [[nodiscard]] bool isEmpty() const;
 
     [[maybe_unused]] [[nodiscard]] size_t getMaxCapacity() const;
