@@ -188,7 +188,7 @@ std::pair<size_t, std::deque<size_t>> Graph::getSequenceMax(Graph::Color color) 
             sequenceToDisplay.pop_back();
         }
     }
-    if(std::get<2>(graphStatesQueue.top()).size() > sequenceMax.second.size())
+    if(!graphStatesQueue.empty() && std::get<2>(graphStatesQueue.top()).size() > sequenceMax.second.size())
     {
         sequenceMax = std::make_pair(std::get<1>(graphStatesQueue.top()), std::get<2>(graphStatesQueue.top()));
     }
