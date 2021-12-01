@@ -28,7 +28,7 @@ Is it possible to remove an uninterrupted sequence of k nodes with all the same 
 std::optional<std::deque<size_t>> sequence = graph.getSequence(Graph::Color::RED, 7);
 ```
 
-### Exemple
+### Example
 
 Consider the following graph:
 
