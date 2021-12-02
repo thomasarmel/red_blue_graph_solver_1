@@ -172,7 +172,7 @@ std::pair<size_t, std::deque<size_t>> Graph::getSequenceMax(Graph::Color color) 
                 continue;
             }
             bool goodColorHasBeenRemoved = graph._nodes[i]->getColor() == color;
-            if(!goodColorHasBeenRemoved && ((graphStatesQueue.empty() || graph.size() <= std::get<1>(graphStatesQueue.top())) || graph.size() <= sequenceMax.second.size()) )
+            if(!goodColorHasBeenRemoved && ((graphStatesQueue.empty() || graph.size() <= std::get<1>(graphStatesQueue.top())) || graph.size() <= sequenceMax.first) )
             {
                 if(sequenceToDisplay.size() > sequenceMax.second.size())
                 {
