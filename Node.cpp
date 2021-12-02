@@ -85,3 +85,13 @@ void Node::propagateColorToNeighbors()
         node.setColor(neighbor.second);
     }
 }
+
+bool operator==(const Node &n1, const Node &n2)
+{
+    return n1._id == n2._id && n1._color == n2._color && n1._neighbors == n2._neighbors;
+}
+
+bool operator!=(const Node &n1, const Node &n2)
+{
+    return n1._id != n2._id || n1._color != n2._color || n1._neighbors != n2._neighbors;
+}

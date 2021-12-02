@@ -47,7 +47,8 @@ public:
     [[maybe_unused]] [[nodiscard]] size_t size() const;
 
     friend std::ostream &operator<<(std::ostream &os, const Graph &graph);
-    //friend bool operator==(const Graph &g1, const Graph &g2); // TODO
+
+    friend bool operator==(const Graph &g1, const Graph &g2);
 
     class GraphModificationException : public std::exception
     {

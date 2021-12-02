@@ -215,8 +215,22 @@ Graph &Graph::operator=(const Graph &other)
     return *this;
 }
 
-/*bool operator==(const Graph &g1, const Graph &g2)
+bool operator==(const Graph &g1, const Graph &g2)
 {
-    return false;
+    if(g1.size() != g2.size())
+    {
+        return false;
+    }
+    for(size_t i = 0; i < g1.getMaxCapacity(); ++i)
+    {
+        if(!g1.nodeExists(i))
+        {
+            continue;
+        }
+        if(g1.getNode(i) != g2.getNode(i))
+        {
+            return false;
+        }
+    }
+    return true;
 }
-*/

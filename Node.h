@@ -37,6 +37,9 @@ public:
 
     friend std::ostream &operator<<(std::ostream &os, const Node &node);
 
+    friend bool operator==(const Node &n1, const Node &n2);
+    friend bool operator!=(const Node &n1, const Node &n2);
+
     class NodeModificationException : public std::exception
     {
     public:
