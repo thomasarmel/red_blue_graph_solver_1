@@ -5,7 +5,6 @@
 
 int main()
 {
-    std::chrono::steady_clock::time_point start, end;
     Graph graph(9);
     // No node 0
     Node *n1 = graph.createNode(Graph::Color::BLUE, 1);
@@ -31,9 +30,9 @@ int main()
     n6->addNeighbor(n3, Graph::Color::BLUE);
     n8->addNeighbor(n7, Graph::Color::RED);
     std::cout << graph << std::endl;
-    start = std::chrono::high_resolution_clock::now();
+    auto start = std::chrono::high_resolution_clock::now();
     std::optional<std::deque<size_t>> sequence = graph.getSequence(Graph::Color::RED, 7);
-    end = std::chrono::high_resolution_clock::now();
+    auto end = std::chrono::high_resolution_clock::now();
     std::cout << (sequence.has_value() ? "Sequence trouvee" : "Sequence non trouvee") << std::endl;
     if (sequence.has_value())
     {

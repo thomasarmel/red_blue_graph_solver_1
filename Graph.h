@@ -6,6 +6,7 @@
 #include <deque>
 #include <exception>
 #include <optional>
+#include <memory>
 
 class Node;
 
@@ -24,7 +25,7 @@ public:
 
     Graph(const Graph &otherGraph);
 
-    ~Graph();
+    ~Graph() = default;
 
     Graph &operator=(const Graph &other);
 
@@ -68,7 +69,7 @@ public:
 private:
     size_t _maxCapacity;
     size_t _size = 0;
-    std::vector<Node *> _nodes;
+    std::vector<std::optional<std::unique_ptr<Node>>> _nodes;
 };
 
 

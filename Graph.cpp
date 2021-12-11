@@ -7,7 +7,7 @@
 
 Graph::Graph(size_t maxCapacity) : _maxCapacity(maxCapacity)
 {
-    _nodes.resize(maxCapacity, nullptr);
+    _nodes.resize(maxCapacity);
 }
 
 
@@ -22,28 +22,20 @@ Node *Graph::createNode(const Graph::Color &color, size_t id)
         throw GraphModificationException("Node id is out of bounds");
     }
     _size++;
-    _nodes[id] = new Node(this, color, id);
-    return _nodes[id];
+    _nodes[id] = std::unique_ptr<Node>(new Node(this, color, id));
+    return _nodes[id]->get();
 }
 
 std::ostream &operator<<(std::ostream &os, const Graph &graph)
 {
-    for (Node *node: graph._nodes)
+    for (const std::optional<std::unique_ptr<Node>> &node : graph._nodes)
     {
-        if (node != nullptr)
+        if (node.has_value())
         {
-            os << *node << std::endl;
+            os << **node << std::endl;
         }
     }
     return os;
-}
-
-Graph::~Graph()
-{
-    for (Node *node: _nodes)
-    {
-        delete node;
-    }
 }
 
 Graph::Graph(const Graph &otherGraph) : _maxCapacity(otherGraph._maxCapacity), _size(otherGraph._size)
@@ -51,17 +43,20 @@ Graph::Graph(const Graph &otherGraph) : _maxCapacity(otherGraph._maxCapacity), _
     _nodes.resize(otherGraph._nodes.size());
     for (size_t i = 0; i < _nodes.size(); ++i)
     {
-        if (otherGraph._nodes[i] == nullptr)
+        if (otherGraph._nodes[i].has_value())
         {
-            continue;
+            _nodes[i] = std::unique_ptr<Node>(new Node(this, **otherGraph._nodes[i]));
         }
-        _nodes[i] = new Node(this, otherGraph.getNode(i));
     }
 }
 
 Node &Graph::getNode(size_t id) const
 {
-    return *_nodes[id];
+    if(!nodeExists(id))
+    {
+        throw GraphModificationException("Node does not exist");
+    }
+    return **_nodes[id];
 }
 
 void Graph::removeNode(size_t id)
@@ -70,31 +65,29 @@ void Graph::removeNode(size_t id)
     {
         throw GraphModificationException("Node does not exist");
     }
-    Node *nodeToDelete = _nodes[id];
-    nodeToDelete->propagateColorToNeighbors();
-    for (auto &_node: _nodes)
+    _nodes[id]->get()->propagateColorToNeighbors();
+    for (std::optional<std::unique_ptr<Node>> &node: _nodes)
     {
-        if (_node == nullptr)
+        if (!node.has_value())
         {
             continue;
         }
         try
         {
-            _node->removeNeighbor(id);
+            node->get()->removeNeighbor(id);
         }
         catch (std::exception &e)
         {
             // Ignore exception here
         }
     }
-    _nodes[id] = nullptr;
-    delete nodeToDelete;
+    _nodes[id] = std::nullopt;
     _size--;
 }
 
 bool Graph::nodeExists(size_t id) const
 {
-    return _nodes[id] != nullptr;
+    return _nodes[id].has_value();
 }
 
 [[maybe_unused]] bool Graph::isEmpty() const
@@ -140,11 +133,11 @@ std::optional<std::deque<size_t>> Graph::getSequence(Graph::Color color, size_t 
         }
         for (size_t i = 0; i < graph._nodes.size(); ++i)
         {
-            if (!graph._nodes[i])
+            if (!graph._nodes[i].has_value())
             {
                 continue;
             }
-            bool goodColorHasBeenRemoved = graph._nodes[i]->getColor() == color;
+            bool goodColorHasBeenRemoved = graph._nodes[i]->get()->getColor() == color;
             Graph graphCopy(graph);
             graphCopy.removeNode(i);
             sequenceToDisplay.push_back(i);
@@ -167,11 +160,11 @@ std::pair<size_t, std::deque<size_t>> Graph::getSequenceMax(Graph::Color color) 
         graphStatesQueue.pop();
         for (size_t i = 0; i < graph._nodes.size(); ++i)
         {
-            if (!graph._nodes[i])
+            if (!graph._nodes[i].has_value())
             {
                 continue;
             }
-            bool goodColorHasBeenRemoved = graph._nodes[i]->getColor() == color;
+            bool goodColorHasBeenRemoved = graph._nodes[i]->get()->getColor() == color;
             if(!goodColorHasBeenRemoved && ((graphStatesQueue.empty() || graph.size() <= std::get<1>(graphStatesQueue.top())) || graph.size() <= sequenceMax.first) )
             {
                 if(sequenceToDisplay.size() > sequenceMax.second.size())
@@ -193,12 +186,11 @@ std::pair<size_t, std::deque<size_t>> Graph::getSequenceMax(Graph::Color color) 
 
 Graph &Graph::operator=(const Graph &other)
 {
-    for (auto &_node: _nodes)
+    for (std::optional<std::unique_ptr<Node>> &node: _nodes)
     {
-        if (_node != nullptr)
+        if (node.has_value())
         {
-            delete _node;
-            _node = nullptr;
+            node = std::nullopt;
         }
     }
     _nodes.resize(other._nodes.size());
@@ -206,11 +198,10 @@ Graph &Graph::operator=(const Graph &other)
     _maxCapacity = other._maxCapacity;
     for (size_t i = 0; i < _nodes.size(); ++i)
     {
-        if (other._nodes[i] == nullptr)
+        if (other._nodes[i].has_value())
         {
-            continue;
+            _nodes[i] = std::unique_ptr<Node>(new Node(this, other.getNode(i)));
         }
-        _nodes[i] = new Node(this, other.getNode(i));
     }
     return *this;
 }
