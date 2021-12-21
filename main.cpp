@@ -7,28 +7,30 @@ int main()
 {
     Graph graph(9);
     // No node 0
-    Node *n1 = graph.createNode(Graph::Color::BLUE, 1);
-    Node *n2 = graph.createNode(Graph::Color::RED, 2);
-    Node *n3 = graph.createNode(Graph::Color::RED, 3);
-    Node *n4 = graph.createNode(Graph::Color::BLUE, 4);
-    Node *n5 = graph.createNode(Graph::Color::RED, 5);
-    Node *n6 = graph.createNode(Graph::Color::BLUE, 6);
-    Node *n7 = graph.createNode(Graph::Color::BLUE, 7);
-    Node *n8 = graph.createNode(Graph::Color::RED, 8);
-    n1->addNeighbor(n2, Graph::Color::BLUE);
-    n1->addNeighbor(n8, Graph::Color::BLUE);
-    n2->addNeighbor(n1, Graph::Color::RED);
-    n2->addNeighbor(n3, Graph::Color::BLUE);
-    n2->addNeighbor(n7, Graph::Color::BLUE);
-    n3->addNeighbor(n6, Graph::Color::BLUE);
-    n3->addNeighbor(n7, Graph::Color::RED);
-    n4->addNeighbor(n3, Graph::Color::RED);
-    n4->addNeighbor(n5, Graph::Color::RED);
-    n4->addNeighbor(n6, Graph::Color::BLUE);
-    n5->addNeighbor(n6, Graph::Color::RED);
-    n5->addNeighbor(n7, Graph::Color::BLUE);
-    n6->addNeighbor(n3, Graph::Color::BLUE);
-    n8->addNeighbor(n7, Graph::Color::RED);
+    graph.createNode(Graph::Color::BLUE, 1);
+    graph.createNode(Graph::Color::RED, 2);
+    graph.createNode(Graph::Color::RED, 3);
+    graph.createNode(Graph::Color::BLUE, 4);
+    graph.createNode(Graph::Color::RED, 5);
+    graph.createNode(Graph::Color::BLUE, 6);
+    graph.createNode(Graph::Color::BLUE, 7);
+    graph.createNode(Graph::Color::RED, 8);
+
+    graph.addEdge(1, 2, Graph::Color::BLUE);
+    graph.addEdge(1, 8, Graph::Color::BLUE);
+    graph.addEdge(2, 1, Graph::Color::RED);
+    graph.addEdge(2, 3, Graph::Color::BLUE);
+    graph.addEdge(2, 7, Graph::Color::BLUE);
+    graph.addEdge(3, 6, Graph::Color::BLUE);
+    graph.addEdge(3, 7, Graph::Color::RED);
+    graph.addEdge(4, 3, Graph::Color::RED);
+    graph.addEdge(4, 5, Graph::Color::RED);
+    graph.addEdge(4, 6, Graph::Color::BLUE);
+    graph.addEdge(5, 6, Graph::Color::RED);
+    graph.addEdge(5, 7, Graph::Color::BLUE);
+    graph.addEdge(6, 3, Graph::Color::BLUE);
+    graph.addEdge(8, 7, Graph::Color::RED);
+
     std::cout << graph << std::endl;
     auto start = std::chrono::high_resolution_clock::now();
     std::optional<std::deque<size_t>> sequence = graph.getSequence(Graph::Color::RED, 7);

@@ -11,7 +11,7 @@ Graph::Graph(size_t maxCapacity) : _maxCapacity(maxCapacity)
 }
 
 
-Node *Graph::createNode(const Graph::Color &color, size_t id)
+void Graph::createNode(const Graph::Color &color, size_t id)
 {
     if (nodeExists(id))
     {
@@ -23,7 +23,15 @@ Node *Graph::createNode(const Graph::Color &color, size_t id)
     }
     _size++;
     _nodes[id] = std::unique_ptr<Node>(new Node(this, color, id));
-    return _nodes[id]->get();
+}
+
+void Graph::addEdge(size_t from, size_t to, const Graph::Color &color)
+{
+    if(from >= _nodes.size() || to >= _nodes.size() || from == to || !nodeExists(from) || !nodeExists(to))
+    {
+        throw GraphModificationException("Invalid node index");
+    }
+    _nodes[from].value()->addNeighbor(to, color);
 }
 
 std::ostream &operator<<(std::ostream &os, const Graph &graph)

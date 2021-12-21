@@ -29,7 +29,9 @@ public:
 
     Graph &operator=(const Graph &other);
 
-    Node *createNode(const Graph::Color &color, size_t id);
+    void createNode(const Graph::Color &color, size_t id);
+
+    void addEdge(size_t from, size_t to, const Graph::Color &color);
 
     [[nodiscard]] bool nodeExists(size_t id) const;
 
