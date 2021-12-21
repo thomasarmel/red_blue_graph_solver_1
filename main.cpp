@@ -8,7 +8,8 @@ void flatGraphTest();
 
 int main()
 {
-    graphTest();
+    //graphTest();
+    flatGraphTest();
     return 0;
 }
 
@@ -73,5 +74,7 @@ void flatGraphTest()
 {
     FlatGraph flatGraph(10);
     flatGraph.generateRandom(0.5, 0.5, 0.5);
+    std::cout << flatGraph << std::endl;
+    flatGraph.removeNode(2);
     std::cout << flatGraph << std::endl;
 }

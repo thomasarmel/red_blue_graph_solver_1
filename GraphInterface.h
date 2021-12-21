@@ -1,8 +1,10 @@
 #ifndef RED_BLUE_GRAPH_SOLVER_1_GRAPHINTERFACE_H
 #define RED_BLUE_GRAPH_SOLVER_1_GRAPHINTERFACE_H
 
+#include <iostream>
 #include <vector>
 #include <optional>
+#include <functional>
 
 class GraphInterface
 {

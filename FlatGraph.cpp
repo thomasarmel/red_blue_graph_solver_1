@@ -11,9 +11,20 @@ FlatGraph::FlatGraph(size_t maxCapacity) : _maxCapacity(maxCapacity)
     _randomEngine.seed(_randomGenerator());
 }
 
-void FlatGraph::removeNode(size_t id)
+void FlatGraph::removeNode(size_t nodeId)
 {
-// TODO
+    if(!nodeExists(nodeId))
+    {
+        throw GraphInterface::GraphModificationException("Node does not exist.");
+    }
+    std::vector<std::pair<GraphInterface::Color, size_t>> neighbours = getNodeNeighbors(nodeId);
+    for(const std::pair<GraphInterface::Color, size_t> &neighbour : neighbours)
+    {
+        _nodes[neighbour.second]->color = neighbour.first;
+    }
+    _edges[nodeId - 1] = std::nullopt;
+    _edges[nodeId] = std::nullopt;
+    _nodes[nodeId] = std::nullopt;
 }
 
 void FlatGraph::generateRandom(double redNodeProbability, double redEdgeProbability, double leftDirectedEdgeProbability)
@@ -90,4 +101,27 @@ std::ostream &operator<<(std::ostream &os, const FlatGraph &graph)
         }
     }
     return os;
+}
+
+bool FlatGraph::nodeExists(size_t id) const
+{
+    return id < _maxCapacity && _nodes[id].has_value();
+}
+
+std::vector<std::pair<GraphInterface::Color, size_t>> FlatGraph::getNodeNeighbors(size_t nodeId) const
+{
+    if(!nodeExists(nodeId))
+    {
+        throw GraphInterface::GraphModificationException("Node does not exist.");
+    }
+    std::vector<std::pair<GraphInterface::Color, size_t>> neighbors;
+    if(nodeExists(nodeId + 1) && _edges[nodeId].has_value() && !_edges[nodeId].value().isLeft)
+    {
+        neighbors.emplace_back(_edges[nodeId].value().color, nodeId + 1);
+    }
+    if(nodeId > 0 && nodeExists(nodeId - 1) && _edges[nodeId - 1].has_value() && _edges[nodeId - 1].value().isLeft)
+    {
+        neighbors.emplace_back(_edges[nodeId - 1].value().color, nodeId - 1);
+    }
+    return neighbors;
 }

@@ -13,7 +13,11 @@ public:
     FlatGraph &operator=(const FlatGraph &other) = default;
     ~FlatGraph() = default;
 
-    void removeNode(size_t id);
+    bool nodeExists(size_t id) const;
+
+    std::vector<std::pair<GraphInterface::Color, size_t>> getNodeNeighbors(size_t nodeId) const;
+
+    void removeNode(size_t nodeId);
 
     void generateRandom(double redNodeProbability = 0.5, double redEdgeProbability = 0.5, double leftDirectedEdgeProbability = 0.5);
 
