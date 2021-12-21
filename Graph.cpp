@@ -11,25 +11,25 @@ Graph::Graph(size_t maxCapacity) : _maxCapacity(maxCapacity)
 }
 
 
-void Graph::createNode(const Graph::Color &color, size_t id)
+void Graph::createNode(const GraphInterface::Color &color, size_t id)
 {
     if (nodeExists(id))
     {
-        throw GraphModificationException("Node already exists");
+        throw GraphInterface::GraphModificationException("Node already exists");
     }
     if (id >= _maxCapacity)
     {
-        throw GraphModificationException("Node id is out of bounds");
+        throw GraphInterface::GraphModificationException("Node id is out of bounds");
     }
     _size++;
     _nodes[id] = std::unique_ptr<Node>(new Node(this, color, id));
 }
 
-void Graph::addEdge(size_t from, size_t to, const Graph::Color &color)
+void Graph::addEdge(size_t from, size_t to, const GraphInterface::Color &color)
 {
     if(from >= _nodes.size() || to >= _nodes.size() || from == to || !nodeExists(from) || !nodeExists(to))
     {
-        throw GraphModificationException("Invalid node index");
+        throw GraphInterface::GraphModificationException("Invalid node index");
     }
     _nodes[from].value()->addNeighbor(to, color);
 }
@@ -62,7 +62,7 @@ Node &Graph::getNode(size_t id) const
 {
     if(!nodeExists(id))
     {
-        throw GraphModificationException("Node does not exist");
+        throw GraphInterface::GraphModificationException("Node does not exist");
     }
     return **_nodes[id];
 }
@@ -71,7 +71,7 @@ void Graph::removeNode(size_t id)
 {
     if (!nodeExists(id))
     {
-        throw GraphModificationException("Node does not exist");
+        throw GraphInterface::GraphModificationException("Node does not exist");
     }
     _nodes[id]->get()->propagateColorToNeighbors();
     for (std::optional<std::unique_ptr<Node>> &node: _nodes)
@@ -123,7 +123,7 @@ public:
     }
 };
 
-std::optional<std::deque<size_t>> Graph::getSequence(Graph::Color color, size_t k) const
+std::optional<std::deque<size_t>> Graph::getSequence(GraphInterface::Color color, size_t k) const
 {
     std::priority_queue<std::tuple<Graph, size_t, std::deque<size_t>>, std::vector<std::tuple<Graph, size_t, std::deque<size_t>>>, QueueSequenceTupleComparator> graphStatesQueue;
     graphStatesQueue.push(std::make_tuple(*this, 0, std::deque<size_t>()));
@@ -157,7 +157,7 @@ std::optional<std::deque<size_t>> Graph::getSequence(Graph::Color color, size_t 
     return std::nullopt;
 }
 
-std::pair<size_t, std::deque<size_t>> Graph::getSequenceMax(Graph::Color color) const
+std::pair<size_t, std::deque<size_t>> Graph::getSequenceMax(GraphInterface::Color color) const
 {
     std::priority_queue<std::tuple<Graph, size_t, std::deque<size_t>>, std::vector<std::tuple<Graph, size_t, std::deque<size_t>>>, QueueSequenceTupleComparator> graphStatesQueue;
     std::pair<size_t, std::deque<size_t>> sequenceMax;

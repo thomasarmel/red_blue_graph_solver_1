@@ -5,20 +5,15 @@
 #include <vector>
 #include <deque>
 #include <exception>
-#include <optional>
 #include <memory>
+#include "GraphInterface.h"
+#include "Node.h"
 
 class Node;
 
-class Graph
+class Graph// : GraphInterface
 {
 public:
-    enum class Color
-    {
-        RED,
-        BLUE
-    };
-
     Graph() = delete;
 
     explicit Graph(size_t maxCapacity);
@@ -29,9 +24,9 @@ public:
 
     Graph &operator=(const Graph &other);
 
-    void createNode(const Graph::Color &color, size_t id);
+    void createNode(const GraphInterface::Color &color, size_t id);
 
-    void addEdge(size_t from, size_t to, const Graph::Color &color);
+    void addEdge(size_t from, size_t to, const GraphInterface::Color &color);
 
     [[nodiscard]] bool nodeExists(size_t id) const;
 
@@ -39,9 +34,9 @@ public:
 
     void removeNode(size_t id);
 
-    [[nodiscard]] std::optional<std::deque<size_t>> getSequence(Color color, size_t k) const;
+    [[nodiscard]] std::optional<std::deque<size_t>> getSequence(GraphInterface::Color color, size_t k) const;
 
-    [[nodiscard]] std::pair<size_t, std::deque<size_t>> getSequenceMax(Color color) const;
+    [[nodiscard]] std::pair<size_t, std::deque<size_t>> getSequenceMax(GraphInterface::Color color) const;
 
     [[maybe_unused]] [[nodiscard]] bool isEmpty() const;
 
@@ -52,21 +47,6 @@ public:
     friend std::ostream &operator<<(std::ostream &os, const Graph &graph);
 
     friend bool operator==(const Graph &g1, const Graph &g2);
-
-    class GraphModificationException : public std::exception
-    {
-    public:
-        explicit GraphModificationException(const std::string &message) : _message(message)
-        {}
-
-        [[nodiscard]] const char *what() const noexcept override
-        {
-            return _message.c_str();
-        }
-
-    private:
-        std::string _message;
-    };
 
 private:
     size_t _maxCapacity;

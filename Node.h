@@ -34,26 +34,26 @@ public:
     };
 
 private:
-    Node(Graph *parentGraph, Graph::Color color, size_t id);
+    Node(Graph *parentGraph, GraphInterface::Color color, size_t id);
     Node(Graph *parentGraph, const Node &nodeToCopy);
 
-    void addNeighbor(Node *node, Graph::Color verticeColor);
-    void addNeighbor(size_t nodeId, Graph::Color verticeColor);
+    void addNeighbor(Node *node, GraphInterface::Color verticeColor);
+    void addNeighbor(size_t nodeId, GraphInterface::Color verticeColor);
     void removeNeighbor(size_t nodeId);
-    void setColor(Graph::Color color);
-    [[nodiscard]] Graph::Color getColor() const;
+    void setColor(GraphInterface::Color color);
+    [[nodiscard]] GraphInterface::Color getColor() const;
     [[nodiscard]] size_t getId() const;
     void propagateColorToNeighbors();
     friend class Graph;
-    [[nodiscard]] std::map<size_t, Graph::Color> getNeighbors() const;
+    [[nodiscard]] std::map<size_t, GraphInterface::Color> getNeighbors() const;
     friend std::ostream &operator<<(std::ostream &os, const Node &node);
     friend bool operator==(const Node &n1, const Node &n2);
     friend bool operator!=(const Node &n1, const Node &n2);
 
     Graph &_parentGraph;
-    std::map<size_t, Graph::Color> _neighbors;
+    std::map<size_t, GraphInterface::Color> _neighbors;
     size_t _id;
-    Graph::Color _color;
+    GraphInterface::Color _color;
 };
 
 
