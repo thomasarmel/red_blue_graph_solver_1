@@ -72,9 +72,21 @@ void graphTest()
 
 void flatGraphTest()
 {
-    FlatGraph flatGraph(10);
-    flatGraph.generateRandom(0.5, 0.5, 0.5);
-    std::cout << flatGraph << std::endl;
-    flatGraph.removeNode(2);
+    FlatGraph flatGraph(8);
+    flatGraph.createNode(GraphInterface::Color::RED, 0);
+    flatGraph.createNode(GraphInterface::Color::BLUE, 1);
+    flatGraph.createNode(GraphInterface::Color::RED, 2);
+    flatGraph.createNode(GraphInterface::Color::BLUE, 3);
+    flatGraph.createNode(GraphInterface::Color::BLUE, 4);
+    flatGraph.createNode(GraphInterface::Color::RED, 5);
+    flatGraph.createNode(GraphInterface::Color::RED, 6);
+    flatGraph.createNode(GraphInterface::Color::BLUE, 7);
+    flatGraph.addEdge(0, 1, GraphInterface::Color::RED);
+    flatGraph.addEdge(2, 1, GraphInterface::Color::BLUE);
+    flatGraph.addEdge(2, 3, GraphInterface::Color::RED);
+    flatGraph.addEdge(3, 4, GraphInterface::Color::BLUE);
+    flatGraph.addEdge(5, 4, GraphInterface::Color::BLUE);
+    flatGraph.addEdge(5, 6, GraphInterface::Color::BLUE);
+    flatGraph.addEdge(7, 6, GraphInterface::Color::RED);
     std::cout << flatGraph << std::endl;
 }

@@ -22,8 +22,14 @@ void FlatGraph::removeNode(size_t nodeId)
     {
         _nodes[neighbour.second]->color = neighbour.first;
     }
-    _edges[nodeId - 1] = std::nullopt;
-    _edges[nodeId] = std::nullopt;
+    if(nodeId > 0)
+    {
+        _edges[nodeId - 1] = std::nullopt;
+    }
+    if(nodeId < _maxCapacity - 1)
+    {
+        _edges[nodeId] = std::nullopt;
+    }
     _nodes[nodeId] = std::nullopt;
 }
 
@@ -124,4 +130,36 @@ std::vector<std::pair<GraphInterface::Color, size_t>> FlatGraph::getNodeNeighbor
         neighbors.emplace_back(_edges[nodeId - 1].value().color, nodeId - 1);
     }
     return neighbors;
+}
+
+void FlatGraph::createNode(const GraphInterface::Color &color, size_t id)
+{
+    if(id > _maxCapacity)
+    {
+        throw GraphInterface::GraphModificationException("Node id is too big.");
+    }
+    if(nodeExists(id))
+    {
+        throw GraphInterface::GraphModificationException("Node already exists.");
+    }
+    _nodes[id] = FlatGraphNode{color};
+}
+
+void FlatGraph::addEdge(size_t from, size_t to, const GraphInterface::Color &color)
+{
+    if(!nodeExists(from) || !nodeExists(to))
+    {
+        throw GraphInterface::GraphModificationException("Node does not exist.");
+    }
+    if(from - to != 1 && to - from != 1)
+    {
+        throw GraphInterface::GraphModificationException("Nodes are not adjacent.");
+    }
+    size_t edgeId = std::min(from, to);
+    if(_edges[edgeId].has_value())
+    {
+        throw GraphInterface::GraphModificationException("Edge already exists.");
+    }
+    bool isLeft = (from - to == 1);
+    _edges[edgeId] = FlatGraphEdge{color, isLeft};
 }

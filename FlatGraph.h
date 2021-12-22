@@ -13,9 +13,13 @@ public:
     FlatGraph &operator=(const FlatGraph &other) = default;
     ~FlatGraph() = default;
 
-    bool nodeExists(size_t id) const;
+    [[nodiscard]] bool nodeExists(size_t id) const;
 
-    std::vector<std::pair<GraphInterface::Color, size_t>> getNodeNeighbors(size_t nodeId) const;
+    void createNode(const GraphInterface::Color &color, size_t id);
+
+    void addEdge(size_t from, size_t to, const GraphInterface::Color &color);
+
+    [[nodiscard]] std::vector<std::pair<GraphInterface::Color, size_t>> getNodeNeighbors(size_t nodeId) const;
 
     void removeNode(size_t nodeId);
 
