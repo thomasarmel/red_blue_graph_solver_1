@@ -116,7 +116,7 @@ bool FlatGraph::nodeExists(size_t id) const
 
 bool FlatGraph::edgeExists(size_t id) const
 {
-    return id < _maxCapacity && _edges[id].has_value();
+    return id < _maxCapacity - 1 && _edges[id].has_value();
 }
 
 std::vector<std::pair<GraphInterface::Color, size_t>> FlatGraph::getNodeNeighbors(size_t nodeId) const
