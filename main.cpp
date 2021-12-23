@@ -2,6 +2,7 @@
 #include <chrono>
 #include "Graph.h"
 #include "FlatGraph.h"
+#include <stack>
 
 void graphTest();
 void flatGraphTest();
@@ -56,7 +57,7 @@ void graphTest()
         std::cout << std::endl;
     }
     std::cout << "Temps d'execution : " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count()
-              << " micro-s" << std::endl;
+    << " micro-s" << std::endl;
     start = std::chrono::high_resolution_clock::now();
     std::pair<size_t, std::deque<size_t>> sequenceMax = graph.getSequenceMax(GraphInterface::Color::RED);
     end = std::chrono::high_resolution_clock::now();
@@ -67,7 +68,7 @@ void graphTest()
     }
     std::cout << std::endl;
     std::cout << "Temps d'execution : " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count()
-              << " micro-s" << std::endl;
+    << " micro-s" << std::endl;
 }
 
 void flatGraphTest()
@@ -89,4 +90,13 @@ void flatGraphTest()
     flatGraph.addEdge(5, 6, GraphInterface::Color::BLUE);
     flatGraph.addEdge(7, 6, GraphInterface::Color::RED);
     std::cout << flatGraph << std::endl;
+
+    std::vector<size_t> sequenceMaxRed;
+    sequenceMaxRed = flatGraph.getSequenceMax(GraphInterface::Color::RED, true);
+    std::cout << "Sequence maximale (red) : ";
+    for (const size_t &it: sequenceMaxRed)
+    {
+        std::cout << it << " ";
+    }
+    std::cout << std::endl;
 }

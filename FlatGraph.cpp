@@ -114,6 +114,11 @@ bool FlatGraph::nodeExists(size_t id) const
     return id < _maxCapacity && _nodes[id].has_value();
 }
 
+bool FlatGraph::edgeExists(size_t id) const
+{
+    return id < _maxCapacity && _edges[id].has_value();
+}
+
 std::vector<std::pair<GraphInterface::Color, size_t>> FlatGraph::getNodeNeighbors(size_t nodeId) const
 {
     if(!nodeExists(nodeId))
@@ -162,4 +167,118 @@ void FlatGraph::addEdge(size_t from, size_t to, const GraphInterface::Color &col
     }
     bool isLeft = (from - to == 1);
     _edges[edgeId] = FlatGraphEdge{color, isLeft};
+}
+
+size_t FlatGraph::getMaxCapacity() const {
+    return _maxCapacity;
+}
+
+const std::vector<std::optional<FlatGraph::FlatGraphNode>> &FlatGraph::getNodes() const {
+    return _nodes;
+}
+
+const std::vector<std::optional<FlatGraph::FlatGraphEdge>> &FlatGraph::getEdges() const {
+    return _edges;
+}
+
+bool FlatGraph::isColor(size_t nodeId, size_t edgeId, const GraphInterface::Color& color/*, bool leftOrRight*/) const
+{
+    return this->nodeExists(nodeId)
+    && this->getNodes()[nodeId]->color == color
+    && this->edgeExists(edgeId)
+    && this->getEdges()[edgeId]->color == color;
+}
+
+bool FlatGraph::mayBeInterestingToRemove(size_t nodeId, const GraphInterface::Color& color, bool leftOrRight) const
+{
+    size_t edgeId = leftOrRight ? nodeId - 1 : nodeId;
+    if (!this->edgeExists(edgeId))
+    {
+        return false;
+    }
+    if ((leftOrRight && !this->getEdges()[edgeId]->isLeft) || !leftOrRight && this->getEdges()[edgeId]->isLeft)
+    {
+        return false;
+    }
+    size_t nodeDestId = leftOrRight ? nodeId - 1 : nodeId + 1;
+    return this->isColor(nodeId, edgeId, color/*, leftOrRight*/)
+    && this->nodeExists(nodeDestId) && this->getNodes()[nodeDestId]->color != color;
+}
+
+void FlatGraph::setColor(size_t i, const GraphInterface::Color& color)
+{
+    if(!this->nodeExists(i))
+    {
+        throw GraphInterface::GraphModificationException("Node does not exist.");
+    }
+    this->_nodes[i]->color = color;
+}
+
+void sequenceMaxPushUtil(FlatGraph &graphCopy, std::vector<size_t> &sequenceMaxRed, size_t current)
+{
+    sequenceMaxRed.push_back(current);
+    graphCopy.removeNode(current); // May be useless with a stack
+}
+
+
+std::vector<size_t> FlatGraph::getSequenceMax(const GraphInterface::Color& color, bool trace) const
+{
+    FlatGraph graphCopy(*this);
+    std::vector<size_t> sequenceMax;
+    // std::stack<size_t> unremovedNodes;
+    size_t current = 0;
+    if (trace)
+    {
+        std::cout << "----------------------------------------" << std::endl;
+        std::cout << "FlatGraph - Start sequenceMax" << std::endl;
+        std::cout << graphCopy << std::endl;
+    }
+    while(current < graphCopy.getMaxCapacity())
+    {
+        if(graphCopy.mayBeInterestingToRemove(current, color, false))
+        {
+            if(graphCopy.mayBeInterestingToRemove(current, color, true))
+            {
+                sequenceMaxPushUtil(graphCopy, sequenceMax, current);
+                current--;
+            }
+            else
+            {
+                sequenceMaxPushUtil(graphCopy, sequenceMax, current);
+                current++;
+            }
+        }
+        else
+        {
+            if(graphCopy.mayBeInterestingToRemove(current, color, true))
+            {
+                sequenceMaxPushUtil(graphCopy, sequenceMax, current);
+                current--;
+            }
+            else
+                current++;
+        }
+        if (trace)
+            std::cout << graphCopy << std::endl;
+    }
+    current = 0;
+    while(current < graphCopy.getMaxCapacity())
+    {
+        if (graphCopy.nodeExists(current) && graphCopy.getNodes()[current]->color == color)
+        {
+            sequenceMax.push_back(current);
+            graphCopy.removeNode(current); // May be useless with a stack
+        }
+        current++;
+        if (trace)
+        {
+            std::cout << graphCopy << std::endl;
+        }
+    }
+    if (trace)
+    {
+        std::cout << "FlatGraph - End sequenceMax" << std::endl;
+        std::cout << "----------------------------------------" << std::endl;
+    }
+    return sequenceMax;
 }
