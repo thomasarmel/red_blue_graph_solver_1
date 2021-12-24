@@ -74,7 +74,7 @@ void graphTest()
 void flatGraphTest()
 {
     FlatGraph flatGraph(8);
-    flatGraph.createNode(GraphInterface::Color::RED, 0);
+    /*flatGraph.createNode(GraphInterface::Color::RED, 0);
     flatGraph.createNode(GraphInterface::Color::BLUE, 1);
     flatGraph.createNode(GraphInterface::Color::RED, 2);
     flatGraph.createNode(GraphInterface::Color::BLUE, 3);
@@ -88,7 +88,23 @@ void flatGraphTest()
     flatGraph.addEdge(3, 4, GraphInterface::Color::BLUE);
     flatGraph.addEdge(5, 4, GraphInterface::Color::BLUE);
     flatGraph.addEdge(5, 6, GraphInterface::Color::BLUE);
-    flatGraph.addEdge(7, 6, GraphInterface::Color::RED);
+    flatGraph.addEdge(7, 6, GraphInterface::Color::RED);*/
+    flatGraph.createNode(GraphInterface::Color::RED, 0);
+    flatGraph.createNode(GraphInterface::Color::BLUE, 1);
+    flatGraph.createNode(GraphInterface::Color::RED, 2);
+    flatGraph.createNode(GraphInterface::Color::RED, 3);
+    flatGraph.createNode(GraphInterface::Color::BLUE, 4);
+    flatGraph.createNode(GraphInterface::Color::BLUE, 5);
+    flatGraph.createNode(GraphInterface::Color::RED, 6);
+    flatGraph.createNode(GraphInterface::Color::RED, 7);
+    flatGraph.addEdge(0, 1, GraphInterface::Color::RED);
+    flatGraph.addEdge(1, 2, GraphInterface::Color::BLUE);
+    flatGraph.addEdge(3, 2, GraphInterface::Color::BLUE);
+    flatGraph.addEdge(3, 4, GraphInterface::Color::RED);
+    flatGraph.addEdge(4, 5, GraphInterface::Color::RED);
+    flatGraph.addEdge(6, 5, GraphInterface::Color::BLUE);
+    flatGraph.addEdge(6, 7, GraphInterface::Color::RED);
+    // [RED]-RED->[BLUE]-BLUE->[RED]<-BLUE-[RED]-RED->[BLUE]-RED->[BLUE]<-BLUE-[RED]-RED->[RED]
     std::cout << flatGraph << std::endl;
 
     std::vector<size_t> sequenceMaxRed;

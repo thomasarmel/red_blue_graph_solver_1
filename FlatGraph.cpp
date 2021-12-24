@@ -237,14 +237,17 @@ void findNodesToRemoveBeforeUtil(FlatGraph &graphCopy, std::vector<size_t> &sequ
         && graphCopy.edgeExists(edgeId) && EDGES_LEFT_OR_RIGHT(leftOrRight, edgeId))
         {
             leftOrRight ? currentTemp-- : currentTemp++;
+            leftOrRight ? edgeId-- : edgeId++;
         }
         else
         {
             leftOrRight ? currentTemp += 1 : currentTemp -= 1;
+            leftOrRight ? edgeId += 1 : edgeId -= 1;
             while (BACK_EDGES_COMPARE_CURRENT(leftOrRight, currentTemp, current))
             {
                 sequenceMaxPushAndRemoveUtil(graphCopy, sequenceMax, currentTemp);
                 leftOrRight ? currentTemp++ : currentTemp--;
+                leftOrRight ? edgeId++ : edgeId--;
                 if (trace)
                 {
                     std::cout << graphCopy << std::endl;
