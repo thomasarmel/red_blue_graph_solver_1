@@ -16,6 +16,8 @@ class FlatGraph
 
             [[nodiscard]] bool nodeExists(size_t id) const;
 
+            [[nodiscard]] size_t getMaxCapacity() const;
+
             void createNode(const GraphInterface::Color &color, size_t id);
 
             void addEdge(size_t from, size_t to, const GraphInterface::Color &color);
@@ -25,6 +27,8 @@ class FlatGraph
             void removeNode(size_t nodeId);
 
             void generateRandom(double redNodeProbability = 0.5, double redEdgeProbability = 0.5, double leftDirectedEdgeProbability = 0.5);
+
+            [[nodiscard]] std::vector<size_t> getSequenceMax(const GraphInterface::Color &color, bool trace = false) const;
 
             friend std::ostream &operator<<(std::ostream &os, const FlatGraph &graph);
 
@@ -45,12 +49,6 @@ class FlatGraph
             std::mt19937 _randomGenerator;
             std::default_random_engine _randomEngine;
 
-            // std::stack<std::pair<GraphInterface::Color, size_t>> getPath(size_t from, size_t to) const;
-        public:
-            [[nodiscard]] size_t getMaxCapacity() const;
-            [[nodiscard]] const std::vector<std::optional<FlatGraphNode>> &getNodes() const;
-            [[nodiscard]] const std::vector<std::optional<FlatGraphEdge>> &getEdges() const;
-
             [[nodiscard]] bool isColor(size_t nodeId, size_t edgeId, const GraphInterface::Color &color/*, bool leftOrRight*/) const;
 
             [[nodiscard]] bool edgeExists(size_t id) const;
@@ -59,7 +57,8 @@ class FlatGraph
 
             void setColor(size_t i, const GraphInterface::Color& color);
 
-            [[nodiscard]] std::vector<size_t> getSequenceMax(const GraphInterface::Color &color, bool trace) const;
+            void findNodesToRemoveBeforeUtil(FlatGraph &graphCopy, std::vector<size_t> &sequenceMax, size_t current,
+                                     const GraphInterface::Color &color, bool leftOrRight, bool trace) const;
 };
 
 #endif //RED_BLUE_GRAPH_SOLVER_1_FLATGRAPH_H

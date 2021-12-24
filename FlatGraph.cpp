@@ -173,20 +173,12 @@ size_t FlatGraph::getMaxCapacity() const {
     return _maxCapacity;
 }
 
-const std::vector<std::optional<FlatGraph::FlatGraphNode>> &FlatGraph::getNodes() const {
-    return _nodes;
-}
-
-const std::vector<std::optional<FlatGraph::FlatGraphEdge>> &FlatGraph::getEdges() const {
-    return _edges;
-}
-
 bool FlatGraph::isColor(size_t nodeId, size_t edgeId, const GraphInterface::Color& color/*, bool leftOrRight*/) const
 {
     return this->nodeExists(nodeId)
-    && this->getNodes()[nodeId]->color == color
+    && this->_nodes[nodeId]->color == color
     && this->edgeExists(edgeId)
-    && this->getEdges()[edgeId]->color == color;
+    && _edges[edgeId]->color == color;
 }
 
 bool FlatGraph::mayBeInterestingToRemove(size_t nodeId, const GraphInterface::Color& color, bool leftOrRight) const
@@ -196,13 +188,13 @@ bool FlatGraph::mayBeInterestingToRemove(size_t nodeId, const GraphInterface::Co
     {
         return false;
     }
-    if ((leftOrRight && !this->getEdges()[edgeId]->isLeft) || !leftOrRight && this->getEdges()[edgeId]->isLeft)
+    if ((leftOrRight && !_edges[edgeId]->isLeft) || !leftOrRight && _edges[edgeId]->isLeft)
     {
         return false;
     }
     size_t nodeDestId = leftOrRight ? nodeId - 1 : nodeId + 1;
-    return this->isColor(nodeId, edgeId, color/*, leftOrRight*/)
-    && this->nodeExists(nodeDestId) && this->getNodes()[nodeDestId]->color != color;
+    return isColor(nodeId, edgeId, color)
+    && nodeExists(nodeDestId) && _nodes[nodeDestId]->color != color;
 }
 
 void FlatGraph::setColor(size_t i, const GraphInterface::Color& color)
@@ -221,19 +213,19 @@ void sequenceMaxPushAndRemoveUtil(FlatGraph &graphCopy, std::vector<size_t> &seq
 }
 
 #define EDGES_LEFT_OR_RIGHT(leftOrRight, edgeId) \
-    ((leftOrRight) ? graphCopy.getEdges()[edgeId]->isLeft : !graphCopy.getEdges()[edgeId]->isLeft)
+    ((leftOrRight) ? graphCopy._edges[edgeId]->isLeft : !graphCopy._edges[edgeId]->isLeft)
 
 #define BACK_EDGES_COMPARE_CURRENT(leftOrRight, currentTemp, current) \
     ((leftOrRight) ? (currentTemp) < (current) : (currentTemp) > (current))
 
-void findNodesToRemoveBeforeUtil(FlatGraph &graphCopy, std::vector<size_t> &sequenceMax, size_t current,
-                                 const GraphInterface::Color &color, bool leftOrRight, bool trace)
+void FlatGraph::findNodesToRemoveBeforeUtil(FlatGraph &graphCopy, std::vector<size_t> &sequenceMax, size_t current,
+                                 const GraphInterface::Color &color, bool leftOrRight, bool trace) const
 {
     size_t currentTemp = leftOrRight ? current - 1 : current + 1;
     size_t edgeId = leftOrRight ? current - 1 : current;
     while (true)
     {
-        if (graphCopy.nodeExists(currentTemp) && graphCopy.getNodes()[currentTemp]->color == color
+        if (graphCopy.nodeExists(currentTemp) && graphCopy._nodes[currentTemp]->color == color
         && graphCopy.edgeExists(edgeId) && EDGES_LEFT_OR_RIGHT(leftOrRight, edgeId))
         {
             leftOrRight ? currentTemp-- : currentTemp++;
@@ -298,7 +290,7 @@ std::vector<size_t> FlatGraph::getSequenceMax(const GraphInterface::Color& color
             }
             else
             {
-                if (graphCopy.nodeExists(current) && graphCopy.getNodes()[current]->color == color)
+                if (graphCopy.nodeExists(current) && graphCopy._nodes[current]->color == color)
                 {
                     findNodesToRemoveBeforeUtil(graphCopy, sequenceMax, current, color, false, trace);
                     sequenceMaxPushAndRemoveUtil(graphCopy, sequenceMax, current);
@@ -313,7 +305,7 @@ std::vector<size_t> FlatGraph::getSequenceMax(const GraphInterface::Color& color
     current = 0;
     while(current < graphCopy.getMaxCapacity())
     {
-        if (graphCopy.nodeExists(current) && graphCopy.getNodes()[current]->color == color)
+        if (graphCopy.nodeExists(current) && graphCopy._nodes[current]->color == color)
         {
             sequenceMax.push_back(current);
             graphCopy.removeNode(current); // May be useless with a stack
