@@ -49,7 +49,7 @@ private:
     std::mt19937 _randomGenerator;
     std::default_random_engine _randomEngine;
 
-    [[nodiscard]] bool isColor(size_t nodeId, size_t edgeId, const GraphInterface::Color &color/*, bool leftOrRight*/) const;
+    [[nodiscard]] bool isColor(size_t nodeId, size_t edgeId, const GraphInterface::Color &color) const;
 
     [[nodiscard]] bool edgeExists(size_t id) const;
 

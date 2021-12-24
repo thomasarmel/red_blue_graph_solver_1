@@ -212,15 +212,15 @@ void FlatGraph::sequenceMaxPushAndRemoveUtil(FlatGraph &graphCopy, std::vector<s
     graphCopy.removeNode(current); // May be useless with a stack
 }
 
-#define EDGES_LEFT_OR_RIGHT(leftOrRight, edgeId) \
-    ((leftOrRight) ? graphCopy._edges[edgeId]->isLeft : !graphCopy._edges[edgeId]->isLeft)
-
-#define BACK_EDGES_COMPARE_CURRENT(leftOrRight, currentTemp, current) \
-    ((leftOrRight) ? (currentTemp) < (current) : (currentTemp) > (current))
-
 void FlatGraph::findNodesToRemoveBeforeUtil(FlatGraph &graphCopy, std::vector<size_t> &sequenceMax, size_t current,
                                  const GraphInterface::Color &color, bool leftOrRight, bool trace) const
 {
+    const std::function<bool(size_t, size_t)> EDGES_LEFT_OR_RIGHT = [&graphCopy](size_t leftOrRight, size_t edgeId) {
+        return (leftOrRight) != 0 == graphCopy._edges[edgeId]->isLeft;
+    };
+    const std::function<bool(size_t, size_t, size_t)> BACK_EDGES_COMPARE_CURRENT = [](size_t leftOrRight, size_t currentTemp, size_t current) {
+        return ((leftOrRight) ? (currentTemp) < (current) : (currentTemp) > (current));
+    };
     size_t currentTemp = leftOrRight ? current - 1 : current + 1;
     size_t edgeId = leftOrRight ? current - 1 : current;
     while (true)
@@ -254,7 +254,6 @@ std::vector<size_t> FlatGraph::getSequenceMax(const GraphInterface::Color& color
 {
     FlatGraph graphCopy(*this);
     std::vector<size_t> sequenceMax;
-    // std::stack<size_t> unremovedNodes;
     size_t current = 0;
     if (trace)
     {
@@ -262,8 +261,6 @@ std::vector<size_t> FlatGraph::getSequenceMax(const GraphInterface::Color& color
         std::cout << "FlatGraph - Start getSequenceMax" << std::endl;
         std::cout << graphCopy << std::endl;
     }
-    // do
-    // {
     while(current < graphCopy.getMaxCapacity())
     {
         if(graphCopy.mayBeInterestingToRemove(current, color, false))
@@ -301,7 +298,6 @@ std::vector<size_t> FlatGraph::getSequenceMax(const GraphInterface::Color& color
         if (trace)
             std::cout << graphCopy << std::endl;
     }
-    // } while (!unremovedNodes.empty());
     current = 0;
     while(current < graphCopy.getMaxCapacity())
     {
