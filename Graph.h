@@ -11,7 +11,7 @@
 
 class Node;
 
-class Graph// : GraphInterface
+class Graph : public GraphInterface
 {
 public:
     Graph() = delete;

@@ -5,6 +5,7 @@
 #include <vector>
 #include <optional>
 #include <functional>
+#include <deque>
 
 class GraphInterface
 {
@@ -29,6 +30,14 @@ public:
     private:
         std::string _message;
     };
+
+    virtual void createNode(const GraphInterface::Color &color, size_t id) = 0;
+    virtual void addEdge(size_t from, size_t to, const GraphInterface::Color &color) = 0;
+    virtual bool nodeExists(size_t id) const = 0;
+    virtual void removeNode(size_t id) = 0;
+    virtual bool isEmpty() const = 0;
+    virtual size_t getMaxCapacity() const = 0;
+    virtual size_t size() const = 0;
 };
 
 
