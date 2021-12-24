@@ -214,12 +214,46 @@ void FlatGraph::setColor(size_t i, const GraphInterface::Color& color)
     this->_nodes[i]->color = color;
 }
 
-void sequenceMaxPushUtil(FlatGraph &graphCopy, std::vector<size_t> &sequenceMaxRed, size_t current)
+void sequenceMaxPushAndRemoveUtil(FlatGraph &graphCopy, std::vector<size_t> &sequenceMaxRed, size_t current)
 {
     sequenceMaxRed.push_back(current);
     graphCopy.removeNode(current); // May be useless with a stack
 }
 
+#define EDGES_LEFT_OR_RIGHT(leftOrRight, edgeId) \
+    ((leftOrRight) ? graphCopy.getEdges()[edgeId]->isLeft : !graphCopy.getEdges()[edgeId]->isLeft)
+
+#define BACK_EDGES_COMPARE_CURRENT(leftOrRight, currentTemp, current) \
+    ((leftOrRight) ? (currentTemp) < (current) : (currentTemp) > (current))
+
+void findNodesToRemoveBeforeUtil(FlatGraph &graphCopy, std::vector<size_t> &sequenceMax, size_t current,
+                                 const GraphInterface::Color &color, bool leftOrRight, bool trace)
+{
+    size_t currentTemp = leftOrRight ? current - 1 : current + 1;
+    size_t edgeId = leftOrRight ? current - 1 : current;
+    while (true)
+    {
+        if (graphCopy.nodeExists(currentTemp) && graphCopy.getNodes()[currentTemp]->color == color
+        && graphCopy.edgeExists(edgeId) && EDGES_LEFT_OR_RIGHT(leftOrRight, edgeId))
+        {
+            leftOrRight ? currentTemp-- : currentTemp++;
+        }
+        else
+        {
+            leftOrRight ? currentTemp += 1 : currentTemp -= 1;
+            while (BACK_EDGES_COMPARE_CURRENT(leftOrRight, currentTemp, current))
+            {
+                sequenceMaxPushAndRemoveUtil(graphCopy, sequenceMax, currentTemp);
+                leftOrRight ? currentTemp++ : currentTemp--;
+                if (trace)
+                {
+                    std::cout << graphCopy << std::endl;
+                }
+            }
+            break;
+        }
+    }
+}
 
 std::vector<size_t> FlatGraph::getSequenceMax(const GraphInterface::Color& color, bool trace) const
 {
@@ -230,21 +264,24 @@ std::vector<size_t> FlatGraph::getSequenceMax(const GraphInterface::Color& color
     if (trace)
     {
         std::cout << "----------------------------------------" << std::endl;
-        std::cout << "FlatGraph - Start sequenceMax" << std::endl;
+        std::cout << "FlatGraph - Start getSequenceMax" << std::endl;
         std::cout << graphCopy << std::endl;
     }
+    // do
+    // {
     while(current < graphCopy.getMaxCapacity())
     {
         if(graphCopy.mayBeInterestingToRemove(current, color, false))
         {
             if(graphCopy.mayBeInterestingToRemove(current, color, true))
             {
-                sequenceMaxPushUtil(graphCopy, sequenceMax, current);
+                sequenceMaxPushAndRemoveUtil(graphCopy, sequenceMax, current);
                 current--;
             }
             else
             {
-                sequenceMaxPushUtil(graphCopy, sequenceMax, current);
+                findNodesToRemoveBeforeUtil(graphCopy, sequenceMax, current, color, true, trace);
+                sequenceMaxPushAndRemoveUtil(graphCopy, sequenceMax, current);
                 current++;
             }
         }
@@ -252,15 +289,24 @@ std::vector<size_t> FlatGraph::getSequenceMax(const GraphInterface::Color& color
         {
             if(graphCopy.mayBeInterestingToRemove(current, color, true))
             {
-                sequenceMaxPushUtil(graphCopy, sequenceMax, current);
+                findNodesToRemoveBeforeUtil(graphCopy, sequenceMax, current, color, false, trace);
+                sequenceMaxPushAndRemoveUtil(graphCopy, sequenceMax, current);
                 current--;
             }
             else
+            {
+                if (graphCopy.nodeExists(current) && graphCopy.getNodes()[current]->color == color)
+                {
+                    findNodesToRemoveBeforeUtil(graphCopy, sequenceMax, current, color, false, trace);
+                    sequenceMaxPushAndRemoveUtil(graphCopy, sequenceMax, current);
+                }
                 current++;
+            }
         }
         if (trace)
             std::cout << graphCopy << std::endl;
     }
+    // } while (!unremovedNodes.empty());
     current = 0;
     while(current < graphCopy.getMaxCapacity())
     {
@@ -277,7 +323,7 @@ std::vector<size_t> FlatGraph::getSequenceMax(const GraphInterface::Color& color
     }
     if (trace)
     {
-        std::cout << "FlatGraph - End sequenceMax" << std::endl;
+        std::cout << "FlatGraph - End getSequenceMax" << std::endl;
         std::cout << "----------------------------------------" << std::endl;
     }
     return sequenceMax;

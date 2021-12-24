@@ -60,7 +60,6 @@ class FlatGraph
             void setColor(size_t i, const GraphInterface::Color& color);
 
             [[nodiscard]] std::vector<size_t> getSequenceMax(const GraphInterface::Color &color, bool trace) const;
-        };
-
+};
 
 #endif //RED_BLUE_GRAPH_SOLVER_1_FLATGRAPH_H
