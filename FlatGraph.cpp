@@ -206,7 +206,7 @@ void FlatGraph::setColor(size_t i, const GraphInterface::Color& color)
     this->_nodes[i]->color = color;
 }
 
-void sequenceMaxPushAndRemoveUtil(FlatGraph &graphCopy, std::vector<size_t> &sequenceMaxRed, size_t current)
+void FlatGraph::sequenceMaxPushAndRemoveUtil(FlatGraph &graphCopy, std::vector<size_t> &sequenceMaxRed, size_t current) const
 {
     sequenceMaxRed.push_back(current);
     graphCopy.removeNode(current); // May be useless with a stack
