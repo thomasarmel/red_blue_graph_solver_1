@@ -34,7 +34,7 @@ public:
 
     [[nodiscard]] std::deque<size_t> getSequenceMax(const GraphInterface::Color &color) const;
 
-    void getSequenceMaxBis(const GraphInterface::Color &color) const;
+    [[nodiscard]] std::deque<size_t> getSequenceMaxBis(const GraphInterface::Color &color) const;
 
     bool shouldBeRemovedBefore(size_t first, size_t second, const GraphInterface::Color &color) const;
 

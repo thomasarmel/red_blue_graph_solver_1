@@ -107,13 +107,14 @@ void flatGraphTest()
     // [RED]-RED->[BLUE]-BLUE->[RED]<-BLUE-[RED]-RED->[BLUE]-RED->[BLUE]<-BLUE-[RED]-RED->[RED]
     std::cout << flatGraph << std::endl;
 
-    /*std::deque<size_t> sequenceMaxRed;
-    sequenceMaxRed = flatGraph.getSequenceMax(GraphInterface::Color::RED);
+    std::deque<size_t> sequenceMaxRed;
+    //sequenceMaxRed = flatGraph.getSequenceMax(GraphInterface::Color::RED);
+    sequenceMaxRed = flatGraph.getSequenceMaxBis(GraphInterface::Color::RED);
     std::cout << "Maximum sequence (red): ";
     for (const size_t &it: sequenceMaxRed)
     {
         std::cout << it << " ";
     }
-    std::cout << std::endl;*/
-    flatGraph.getSequenceMaxBis(GraphInterface::Color::RED);
+    std::cout << std::endl;
+
 }

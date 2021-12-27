@@ -309,7 +309,7 @@ size_t FlatGraph::size() const
     return _size;
 }
 
-void FlatGraph::getSequenceMaxBis(const GraphInterface::Color &color) const
+std::deque<size_t> FlatGraph::getSequenceMaxBis(const GraphInterface::Color &color) const
 {
     std::list<size_t> sequenceMax;
     for (size_t i = 0; i < _size; i++)
@@ -342,16 +342,18 @@ void FlatGraph::getSequenceMaxBis(const GraphInterface::Color &color) const
             offset = 1;
             sequenceMax.splice(itDestination, sequenceMax, itToMove);
         }
-        for(auto it = sequenceMax.begin(); it != sequenceMax.end(); it++)
-        {
-            std::cout << *it << " ";
-        }
-        std::cout << std::endl;
     }
+    std::deque<size_t> sequenceMaxDeque;
+    FlatGraph graphCopy(*this);
     for(auto it = sequenceMax.begin(); it != sequenceMax.end(); it++)
     {
-        std::cout << *it << " ";
+        if(graphCopy.nodeExists(*it) && graphCopy._nodes[*it]->color == color)
+        {
+            sequenceMaxDeque.push_back(*it);
+            graphCopy.removeNode(*it);
+        }
     }
+    return sequenceMaxDeque;
 }
 
 bool FlatGraph::shouldBeRemovedBefore(size_t first, size_t second, const GraphInterface::Color &color) const
