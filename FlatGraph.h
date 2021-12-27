@@ -34,6 +34,10 @@ public:
 
     [[nodiscard]] std::deque<size_t> getSequenceMax(const GraphInterface::Color &color) const;
 
+    void getSequenceMaxBis(const GraphInterface::Color &color) const;
+
+    bool shouldBeRemovedBefore(size_t first, size_t second, const GraphInterface::Color &color) const;
+
     friend std::ostream &operator<<(std::ostream &os, const FlatGraph &graph);
 
 private:
@@ -48,7 +52,7 @@ private:
     };
 
     size_t _maxCapacity;
-    size_t _size;
+    size_t _size = 0;
     std::vector<std::optional<FlatGraphNode>> _nodes;
     std::vector<std::optional<FlatGraphEdge>> _edges;
     std::mt19937 _randomGenerator;
