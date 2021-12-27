@@ -320,29 +320,17 @@ std::deque<size_t> FlatGraph::getSequenceMaxBis(const GraphInterface::Color &col
             sequenceMax.emplace_back(i);
         }
     }
-    size_t offset = 1;
+    long long alreadyParsed = 0;
     for(size_t i = 0; i < _size; i++)
     {
-        std::list<size_t>::iterator itToMove = sequenceMax.end();
-        std::list<size_t>::iterator itDestination = sequenceMax.end();
-        for(size_t j = 0; j < offset; j++)
-        {
-            itToMove--;
-        }
-        itDestination--;
+        std::list<size_t>::iterator itToMove = std::prev(sequenceMax.end(), 1);
+        std::list<size_t>::iterator itDestination = std::next(sequenceMax.begin(), alreadyParsed);
         while (itDestination != sequenceMax.begin() && !shouldBeRemovedBefore(*(std::prev(itDestination, 1)), *itToMove, color))
         {
             itDestination--;
         }
-        if(itToMove == itDestination)
-        {
-            offset++;
-        }
-        else
-        {
-            offset = 1;
-            sequenceMax.splice(itDestination, sequenceMax, itToMove);
-        }
+        sequenceMax.splice(itDestination, sequenceMax, itToMove);
+        alreadyParsed++;
         /*for (auto node : sequenceMax)
         {
             std::cout << node << " ";
