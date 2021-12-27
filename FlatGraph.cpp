@@ -343,6 +343,11 @@ std::deque<size_t> FlatGraph::getSequenceMaxBis(const GraphInterface::Color &col
             offset = 1;
             sequenceMax.splice(itDestination, sequenceMax, itToMove);
         }
+        /*for (auto node : sequenceMax)
+        {
+            std::cout << node << " ";
+        }
+        std::cout << std::endl;*/
     }
     std::deque<size_t> sequenceMaxDeque;
     FlatGraph graphCopy(*this);
@@ -366,30 +371,34 @@ bool FlatGraph::shouldBeRemovedBefore(size_t first, size_t second, const GraphIn
     }
     switch (diff)
     {
-        case -1:
+        case -1: // first a gauche de second
             if (!edgeExists(first))
             {
                 return false;
             }
+            // first donne bonne couleur a second
+            if (!_edges[first]->isLeft && _nodes[second]->color != color && _edges[first]->color == color)
+            {
+                return true;
+            }
+            // second donne mauvaise couleur a first
             if (_edges[first]->isLeft && _nodes[first]->color == color && _edges[first]->color != color)
             {
                 return true;
             }
-            if (!_edges[first]->isLeft && _nodes[first]->color != color && _edges[first]->color == color)
-            {
-                return true;
-            }
             break;
-        case 1:
+        case 1: // first a droite de second
             if (!edgeExists(second))
             {
                 return false;
             }
+            // first donne bonne couleur a second
             if (_edges[second]->isLeft && _nodes[second]->color != color && _edges[second]->color == color)
             {
                 return true;
             }
-            if (!_edges[second]->isLeft && _nodes[second]->color == color && _edges[second]->color != color)
+            // second donne mauvaise couleur a first
+            if (!_edges[second]->isLeft && _nodes[first]->color == color && _edges[second]->color != color)
             {
                 return true;
             }
