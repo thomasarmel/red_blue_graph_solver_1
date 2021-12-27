@@ -1,5 +1,6 @@
 #include <iostream>
 #include <chrono>
+#include <list>
 #include "FlatGraph.h"
 
 FlatGraph::FlatGraph(size_t maxCapacity) : _maxCapacity(maxCapacity)
