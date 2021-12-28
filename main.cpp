@@ -5,6 +5,7 @@
 #include "compilation_infos.h"
 
 void graphTest();
+
 void flatGraphTest();
 
 int main()
@@ -44,36 +45,36 @@ void graphTest()
 
     std::cout << graph << std::endl;
     auto start = std::chrono::high_resolution_clock::now();
-    std::optional<std::deque<size_t>> sequence = graph.getSequence(GraphInterface::Color::RED, 7);
+    std::optional<std::deque<size_t>> sequence = graph.getSequence(GraphInterface::Color::RED, 5);
     auto end = std::chrono::high_resolution_clock::now();
     std::cout << (sequence.has_value() ? "Sequence trouvee" : "Sequence non trouvee") << std::endl;
     if (sequence.has_value())
     {
         std::cout << "Sequence : ";
-        for (const size_t &it: sequence.value())
+        for (const size_t& it: sequence.value())
         {
             std::cout << it << " ";
         }
         std::cout << std::endl;
     }
     std::cout << "Temps d'execution : " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count()
-    << " micro-s" << std::endl;
+              << " micro-s" << std::endl;
     start = std::chrono::high_resolution_clock::now();
     std::pair<size_t, std::deque<size_t>> sequenceMax = graph.getSequenceMax(GraphInterface::Color::RED);
     end = std::chrono::high_resolution_clock::now();
     std::cout << "Sequence maximale (" << sequenceMax.first << " noeuds rouges retires): ";
-    for (const size_t &it: sequenceMax.second)
+    for (const size_t& it: sequenceMax.second)
     {
         std::cout << it << " ";
     }
     std::cout << std::endl;
     std::cout << "Temps d'execution : " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count()
-    << " micro-s" << std::endl;
+              << " micro-s" << std::endl;
 }
 
 void flatGraphTest()
 {
-    FlatGraph flatGraph(1000);
+    FlatGraph flatGraph(100);
     /*flatGraph.createNode(GraphInterface::Color::RED, 0);
     flatGraph.createNode(GraphInterface::Color::BLUE, 1);
     flatGraph.createNode(GraphInterface::Color::RED, 2);
@@ -110,15 +111,59 @@ void flatGraphTest()
     std::cout << "Test sur un graphe de taille " << flatGraph.size() << std::endl;
     std::cout << "Compilation: " << (DEBUG ? "DEBUG" : "RELEASE") << std::endl;
     std::cout << GET_COMPILER_NAME() << " " << GET_BUILD_ARCHITECTURE() << " " << GET_OS() << std::endl;
+
+    double results[2][11][11] = {0};
+
+    constexpr int N = 100;
+    for (int pi = 0; pi <= 10; pi++)
+    {
+        double p = pi / 10.0;
+        for (int qi = 0; qi <= 10; qi++)
+        {
+            double q = qi / 10.0;
+
+            int sum1 = 0, sum2 = 0;
+
+            for (int i = 0; i < N; i++)
+            {
+                flatGraph.generateRandom(p, q, 0.5);
+
+                std::deque<size_t> sequenceMaxRed;
+                sequenceMaxRed = flatGraph.getSequenceMax(GraphInterface::Color::RED);
+                sum1 += sequenceMaxRed.size();
+                sequenceMaxRed = flatGraph.getSequenceMaxBis(GraphInterface::Color::RED);
+                sum2 += sequenceMaxRed.size();
+            }
+
+            results[0][pi][qi] = sum1 / (double) N;
+            results[1][pi][qi] = sum2 / (double) N;
+        }
+    }
+
+    for (int i = 0; i < 2; i++)
+    {
+        for (int pi = 0; pi <= 10; pi++)
+        {
+            for (int qi = 0; qi <= 10; qi++)
+            {
+                printf("%5.1f ", results[i][pi][qi]);
+            }
+            std::cout << std::endl;
+        }
+    }
+
+    return;
     std::deque<size_t> sequenceMaxRed;
     auto start = std::chrono::high_resolution_clock::now();
     sequenceMaxRed = flatGraph.getSequenceMax(GraphInterface::Color::RED);
     auto end = std::chrono::high_resolution_clock::now();
-    std::cout << "Temps d'execution Marcel : " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << " us" << std::endl;
+    std::cout << "Temps d'execution Marcel : "
+              << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << " us" << std::endl;
     start = std::chrono::high_resolution_clock::now();
     sequenceMaxRed = flatGraph.getSequenceMaxBis(GraphInterface::Color::RED);
     end = std::chrono::high_resolution_clock::now();
-    std::cout << "Temps d'execution Thomas : " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << " us" << std::endl;
+    std::cout << "Temps d'execution Thomas : "
+              << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << " us" << std::endl;
     /*std::cout << "Maximum sequence (red): ";
     for (const size_t &it: sequenceMaxRed)
     {
