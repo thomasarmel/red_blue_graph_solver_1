@@ -105,7 +105,9 @@ void flatGraphTest()
     flatGraph.addEdge(4, 5, GraphInterface::Color::RED);
     flatGraph.addEdge(6, 5, GraphInterface::Color::BLUE);
     flatGraph.addEdge(6, 7, GraphInterface::Color::RED);*/
+
     flatGraph.generateRandom();
+
     //std::cout << flatGraph << std::endl;
 
     std::cout << "Test sur un graphe de taille " << flatGraph.size() << std::endl;
@@ -152,8 +154,7 @@ void flatGraphTest()
         }
     }
 
-    return;
-    std::deque<size_t> sequenceMaxRed;
+    /*std::deque<size_t> sequenceMaxRed;
     auto start = std::chrono::high_resolution_clock::now();
     sequenceMaxRed = flatGraph.getSequenceMax(GraphInterface::Color::RED);
     auto end = std::chrono::high_resolution_clock::now();
@@ -164,11 +165,10 @@ void flatGraphTest()
     end = std::chrono::high_resolution_clock::now();
     std::cout << "Temps d'execution Thomas : "
               << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << " us" << std::endl;
-    /*std::cout << "Maximum sequence (red): ";
+    std::cout << "Maximum sequence (red): ";
     for (const size_t &it: sequenceMaxRed)
     {
         std::cout << it << " ";
     }
     std::cout << std::endl;*/
-
 }

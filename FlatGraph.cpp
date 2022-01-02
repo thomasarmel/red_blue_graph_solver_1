@@ -265,7 +265,6 @@ std::deque<size_t> FlatGraph::getSequenceMax(const GraphInterface::Color &color)
                 current--;
             } else
             {
-                findNodesToRemoveBeforeUtil(graphCopy, sequenceMax, current, color, true);
                 sequenceMaxPushAndRemoveUtil(graphCopy, sequenceMax, current);
                 current++;
             }
@@ -286,16 +285,6 @@ std::deque<size_t> FlatGraph::getSequenceMax(const GraphInterface::Color &color)
                 current++;
             }
         }
-    }
-    current = 0;
-    while (current < graphCopy.getMaxCapacity())
-    {
-        if (graphCopy.nodeExists(current) && graphCopy._nodes[current]->color == color)
-        {
-            sequenceMax.push_back(current);
-            graphCopy.removeNode(current); // May be useless with a stack
-        }
-        current++;
     }
     return sequenceMax;
 }
