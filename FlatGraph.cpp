@@ -218,10 +218,10 @@ FlatGraph::sequenceMaxPushAndRemoveUtil(FlatGraph &graphCopy, std::deque<size_t>
 void FlatGraph::findNodesToRemoveBeforeUtil(FlatGraph &graphCopy, std::deque<size_t> &sequenceMax, size_t current,
                                             const GraphInterface::Color &color, bool leftOrRight) const
 {
-    const std::function<bool(size_t, size_t)> EDGES_LEFT_OR_RIGHT = [&graphCopy](size_t leftOrRight, size_t edgeId) {
+    static const std::function<bool(size_t, size_t)> EDGES_LEFT_OR_RIGHT = [&graphCopy](size_t leftOrRight, size_t edgeId) {
         return (leftOrRight) != 0 == graphCopy._edges[edgeId]->isLeft;
     };
-    const std::function<bool(size_t, size_t, size_t)> BACK_EDGES_COMPARE_CURRENT = [](size_t leftOrRight,
+    static const std::function<bool(size_t, size_t, size_t)> BACK_EDGES_COMPARE_CURRENT = [](size_t leftOrRight,
                                                                                       size_t currentTemp,
                                                                                       size_t current) {
         return ((leftOrRight) ? (currentTemp) < (current) : (currentTemp) > (current));
